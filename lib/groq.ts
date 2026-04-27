@@ -21,7 +21,7 @@ export async function generateHinglishReview(input: ReviewInput): Promise<string
     throw new Error("missing_groq_api_key");
   }
 
-  const model = process.env.GROQ_MODEL?.trim() || "llama-3.3-70b-versatile";
+  const model = process.env.GROQ_MODEL?.trim() || "openai/gpt-oss-120b";
   const variant = Math.floor(Math.random() * 4) + 1;
   const ratingsText = input.categories
     .map((cat, i) => `- ${cat}: ${input.ratings[i]}/5`)
