@@ -8,14 +8,114 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
-model User {
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  EXPIRED
+  CANCELLED
+}
+
+enum Plan {
+  STARTER
+  GROWTH
+  AGENCY
+}
+
+enum Niche {
+  RESTAURANT
+  SALON
+  GYM
+  HOTEL
+  RETAIL
+  CLINIC
+  COACHING
+}
+
+model Owner {
+  id                     String             @id @default(cuid())
+  email                  String?            @unique
+  passwordHash           String?
+  phone                  String?            @unique
+  name                   String             @default("")
+  deviceFingerprint      String?
+  trialStartedAt         DateTime?
+  trialEndsAt            DateTime?
+  trialWarningSentAt     DateTime?
+  subscriptionStatus     SubscriptionStatus @default(TRIAL)
+  subscriptionPlan       Plan?
+  razorpayCustomerId     String?
+  razorpaySubscriptionId String?
+  googleAccessToken      String?
+  googleRefreshToken     String?
+  autoReplyEnabled       Boolean            @default(true)
+  shops                  Shop[]
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+}
+
+model Shop {
+  id                   String    @id @default(cuid())
+  owner                Owner     @relation(fields: [ownerId], references: [id])
+  ownerId              String
+  name                 String
+  city                 String
+  niche                Niche
+  googleMapsUrl        String    @default("")
+  googleReviewUrl      String    @default("")
+  googlePlaceId        String?   @unique
+  slug                 String    @unique
+  qrCodeUrl            String?
+  isActive             Boolean   @default(true)
+  lastAutoReplyCheckAt DateTime?
+  lastInsightText      String?
+  lastInsightAt        DateTime?
+  googleAccountId      String?
+  googleLocationId     String?
+  lat                  Float?
+  lng                  Float?
+  reviews              Review[]
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+}
+
+model Review {
+  id              String          @id @default(cuid())
+  shop            Shop            @relation(fields: [shopId], references: [id])
+  shopId          String
+  rating1         Int
+  rating2         Int
+  rating3         Int
+  rating4         Int
+  averageRating   Float
+  generatedReview String?
+  customerPhone   String?
+  isPublic        Boolean
+  recoveryTokens  RecoveryToken[]
+  createdAt       DateTime        @default(now())
+}
+
+model RecoveryToken {
+  id        String    @id @default(cuid())
+  review    Review    @relation(fields: [reviewId], references: [id])
+  reviewId  String
+  token     String    @unique @default(cuid())
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+}
+
+model OtpCode {
   id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
+  phone     String
+  code      String
+  expiresAt DateTime
+  verified  Boolean  @default(false)
   createdAt DateTime @default(now())
+
+  @@index([phone])
 }
