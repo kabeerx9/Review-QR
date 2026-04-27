@@ -14,8 +14,8 @@ export default async function PublicReviewPage({ params }: RouteContext) {
 
   if (!shop.isActive) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-xl items-center justify-center p-4">
-        <div className="rounded-2xl border bg-white p-6 text-center shadow-sm">
+      <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-amber-50/90 to-zinc-50 px-4">
+        <div className="mx-auto w-full max-w-[420px] rounded-2xl border border-white/60 bg-white p-6 text-center shadow-md">
           <h1 className="text-xl font-semibold">This review page is currently inactive.</h1>
         </div>
       </main>
@@ -23,14 +23,16 @@ export default async function PublicReviewPage({ params }: RouteContext) {
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-xl p-4 pt-10">
-      <ReviewForm
-        shopId={shop.id}
-        shopName={shop.name}
-        city={shop.city}
-        niche={shop.niche}
-        googleReviewUrl={shop.googleReviewUrl}
-      />
+    <main className="min-h-screen bg-gradient-to-b from-amber-50/90 via-orange-50/40 to-zinc-50 px-4 py-8">
+      <div className="mx-auto w-full max-w-[420px]">
+        <ReviewForm
+          shopId={shop.id}
+          shopName={shop.name}
+          city={shop.city}
+          niche={shop.niche}
+          googleReviewUrl={shop.googleReviewUrl}
+        />
+      </div>
     </main>
   );
 }

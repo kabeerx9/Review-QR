@@ -1,0 +1,87 @@
+import { NICHE_LABELS } from "@/constants/niches";
+
+const GROQ_CHAT_URL = "https://api.groq.com/openai/v1/chat/completions";
+
+export interface ReviewInput {
+  shopName: string;
+  city: string;
+  niche: string;
+  categories: [string, string, string, string];
+  ratings: [number, number, number, number];
+}
+
+interface GroqChatResponse {
+  choices?: Array<{ message?: { content?: string | null } }>;
+  error?: { message?: string };
+}
+
+export async function generateHinglishReview(input: ReviewInput): Promise<string> {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) {
+    throw new Error("missing_groq_api_key");
+  }
+
+  const model = process.env.GROQ_MODEL?.trim() || "llama-3.3-70b-versatile";
+  const variant = Math.floor(Math.random() * 4) + 1;
+  const ratingsText = input.categories
+    .map((cat, i) => `- ${cat}: ${input.ratings[i]}/5`)
+    .join("\n");
+
+  const nicheLabel = NICHE_LABELS[input.niche] ?? input.niche;
+
+  const prompt = `You are a real Indian customer writing a genuine Google review in Hinglish (mixed Hindi and English, casual, like how Indians actually text each other).
+
+Shop Details:
+- Name: ${input.shopName}
+- City: ${input.city}
+- Type: ${nicheLabel}
+
+My Ratings:
+${ratingsText}
+
+Write a natural Hinglish review following these rules:
+- 100-150 words exactly
+- Sound like a genuine customer, NOT corporate or formal
+- Use 1-2 emojis max
+- This is structure variant #${variant} — vary the opening and flow
+- Highlight things rated 4 or 5 specifically
+- Do NOT mention or hint at anything rated below 4
+- End with a recommendation
+- Do NOT use hashtags
+- Do NOT start with "I visited" — vary the opening
+
+Output ONLY the review text. No quotes, no explanation, no preamble.`;
+
+  const res = await fetch(GROQ_CHAT_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model,
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.85,
+      max_tokens: 512,
+    }),
+  });
+
+  const raw = await res.text();
+  let data: GroqChatResponse;
+  try {
+    data = JSON.parse(raw) as GroqChatResponse;
+  } catch {
+    throw new Error(`groq_invalid_json: ${raw.slice(0, 120)}`);
+  }
+
+  if (!res.ok) {
+    const msg = data.error?.message ?? raw.slice(0, 200);
+    throw new Error(`groq_http_${res.status}: ${msg}`);
+  }
+
+  const text = data.choices?.[0]?.message?.content?.trim();
+  if (!text) {
+    throw new Error("empty_groq_response");
+  }
+  return text;
+}

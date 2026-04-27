@@ -25,7 +25,7 @@ export default function StarRating({ value, onChange, label, disabled }: StarRat
               type="button"
               disabled={disabled}
               aria-label={`${label} rating ${star}`}
-              className="h-11 w-11 rounded-lg text-2xl transition disabled:cursor-not-allowed disabled:opacity-40"
+              className="flex h-12 min-h-12 w-12 min-w-12 items-center justify-center rounded-lg text-2xl transition disabled:cursor-not-allowed disabled:opacity-40"
               onClick={() => onChange(star)}
               onMouseEnter={() => setHovered(star)}
               onMouseLeave={() => setHovered(0)}

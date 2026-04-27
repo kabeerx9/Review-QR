@@ -34,6 +34,15 @@ async function main() {
     },
   });
 
+  const seedPhone = process.env.SEED_OWNER_WHATSAPP?.replace(/^whatsapp:/i, "").trim();
+  if (seedPhone) {
+    await prisma.owner.update({
+      where: { email: "test@reviewqr.app" },
+      data: { phone: seedPhone },
+    });
+    console.log("Seeded owner phone from SEED_OWNER_WHATSAPP for bad-review WhatsApp tests.");
+  }
+
   console.log("Seeded. Login: test@reviewqr.app / password123");
   console.log("Review page: http://localhost:3000/r/testshop1");
 }
