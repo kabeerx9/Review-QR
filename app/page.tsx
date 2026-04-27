@@ -9,6 +9,33 @@ const niches = [
 ];
 
 export default function Home() {
+  const faqs = [
+    {
+      q: "Do customers need to download an app?",
+      a: "No. They just scan the QR and open a browser page.",
+    },
+    {
+      q: "What if the customer doesn't post the review?",
+      a: "You can follow up manually for now. Automated reminder comes in later phases.",
+    },
+    {
+      q: "How are bad reviews handled?",
+      a: "Ratings below 3 are treated as private feedback and not shown as public review output.",
+    },
+    {
+      q: "What language are the reviews in?",
+      a: "Phase 0 uses a simple placeholder review text. AI Hinglish generation comes in Phase 1.",
+    },
+    {
+      q: "Can I see what reviews were generated?",
+      a: "Yes, recent review records are visible in dashboard.",
+    },
+    {
+      q: "Do I need a Google Business account?",
+      a: "You can use core flow without linking Google account in Phase 0.",
+    },
+  ];
+
   return (
     <main className="min-h-screen bg-white text-zinc-900">
       <section className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
@@ -127,6 +154,30 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+        <h2 className="text-2xl font-bold">FAQ</h2>
+        <div className="mt-6 space-y-3">
+          {faqs.map((faq) => (
+            <details key={faq.q} className="rounded-2xl border bg-white p-4 shadow-sm">
+              <summary className="cursor-pointer text-sm font-semibold">{faq.q}</summary>
+              <p className="mt-2 text-sm text-zinc-600">{faq.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <footer className="border-t">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-6 text-sm sm:px-6">
+          <p className="font-semibold">ReviewQR</p>
+          <div className="flex items-center gap-4 text-zinc-600">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Contact</a>
+          </div>
+          <p className="text-zinc-500">Made for Indian shop owners 🇮🇳</p>
+        </div>
+      </footer>
     </main>
   );
 }

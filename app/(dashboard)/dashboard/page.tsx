@@ -1,5 +1,6 @@
 import { getSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import DashboardShopActions from "@/components/DashboardShopActions";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import Image from "next/image";
@@ -35,9 +36,6 @@ export default async function DashboardPage() {
           <h1 className="text-2xl font-semibold">Welcome, {owner.name || "Owner"}!</h1>
           <p className="text-sm text-zinc-600">Trial ends on {trialEndsAt}</p>
         </div>
-        <form action="/api/auth/logout" method="post">
-          <button className="rounded-xl border px-3 py-2 text-sm font-medium">Logout</button>
-        </form>
       </header>
 
       {!shop ? (
@@ -64,23 +62,10 @@ export default async function DashboardPage() {
                 className="mt-4 rounded-xl border p-2"
               />
             ) : null}
-            <div className="mt-4 flex flex-wrap gap-2">
-              <a
-                href={shop.qrCodeUrl || "#"}
-                download="reviewqr-code.png"
-                className="rounded-xl bg-orange-500 px-3 py-2 text-sm font-semibold text-white"
-              >
-                Download QR
-              </a>
-              <a
-                href={`/r/${shop.slug}`}
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-xl border px-3 py-2 text-sm font-medium"
-              >
-                Open Review Link
-              </a>
-            </div>
+            <DashboardShopActions
+              qrCodeUrl={shop.qrCodeUrl || ""}
+              reviewLink={`${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/r/${shop.slug}`}
+            />
           </section>
 
           <section className="rounded-2xl border bg-white p-6 shadow-sm">
