@@ -11,6 +11,16 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  async function safeJson(response: Response): Promise<Record<string, unknown>> {
+    const text = await response.text();
+    if (!text) return {};
+    try {
+      return JSON.parse(text) as Record<string, unknown>;
+    } catch {
+      return {};
+    }
+  }
+
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
@@ -22,9 +32,14 @@ export default function LoginPage() {
       body: JSON.stringify({ email, password }),
     });
 
-    const data = await response.json();
+    const data = await safeJson(response);
     if (!response.ok) {
-      setError(data.error || "Login failed");
+      const apiError = typeof data.error === "string" ? data.error : "Login failed";
+      const message =
+        apiError === "missing_jwt_secret"
+          ? "Server config missing JWT_SECRET. Add it in .env.local and restart dev server."
+          : apiError;
+      setError(message);
       setLoading(false);
       return;
     }
