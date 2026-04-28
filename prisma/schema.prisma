@@ -60,7 +60,7 @@ model Owner {
 
 model Shop {
   id                   String    @id @default(cuid())
-  owner                Owner     @relation(fields: [ownerId], references: [id])
+  owner                Owner     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId              String
   name                 String
   city                 String
@@ -85,7 +85,7 @@ model Shop {
 
 model Review {
   id              String          @id @default(cuid())
-  shop            Shop            @relation(fields: [shopId], references: [id])
+  shop            Shop            @relation(fields: [shopId], references: [id], onDelete: Cascade)
   shopId          String
   rating1         Int
   rating2         Int
@@ -101,7 +101,7 @@ model Review {
 
 model RecoveryToken {
   id        String    @id @default(cuid())
-  review    Review    @relation(fields: [reviewId], references: [id])
+  review    Review    @relation(fields: [reviewId], references: [id], onDelete: Cascade)
   reviewId  String
   token     String    @unique @default(cuid())
   expiresAt DateTime
