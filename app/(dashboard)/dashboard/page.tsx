@@ -7,6 +7,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import UserMenu from "@/components/UserMenu";
+import { TrialCountdownBadge, TrialCountdownBanner } from "@/components/TrialCountdown";
 
 export default async function DashboardPage() {
   const session = await getSession();
@@ -45,13 +46,9 @@ export default async function DashboardPage() {
             <span className="text-xs font-bold text-slate-400 hidden sm:inline uppercase tracking-widest ml-2">/ Dashboard</span>
           </Link>
           <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-2 bg-orange-50 px-3 py-1.5 rounded-full border border-orange-100">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
-              </span>
-              <span className="text-[10px] font-black uppercase tracking-widest text-orange-700">Trial Ends: {trialEndsAt}</span>
-            </div>
+            {isTrial && data.subscription.trialEndsAt && (
+              <TrialCountdownBadge trialEndsAt={data.subscription.trialEndsAt} />
+            )}
             
             <UserMenu ownerName={data.ownerName || "Owner"} />
           </div>
@@ -65,23 +62,8 @@ export default async function DashboardPage() {
           <p className="mt-1 text-slate-500 font-medium">Here&apos;s a quick overview of your shop&apos;s reputation.</p>
         </div>
 
-        {isTrial && daysLeft !== null && (
-          <div
-            className={`rounded-2xl border px-5 py-4 ${
-              daysLeft <= 5
-                ? "border-red-200 bg-red-50 text-red-800"
-                : "border-amber-200 bg-amber-50 text-amber-800"
-            }`}
-          >
-            <p className="text-sm font-semibold">
-              {daysLeft <= 5
-                ? `Sirf ${daysLeft} din bache! Aaj hi subscribe karein.`
-                : `${daysLeft} din baaki hain free trial mein.`}
-            </p>
-            <Link href="/billing" className="mt-2 inline-block text-sm font-bold underline">
-              Manage billing
-            </Link>
-          </div>
+        {isTrial && data.subscription.trialEndsAt && (
+          <TrialCountdownBanner trialEndsAt={data.subscription.trialEndsAt} />
         )}
 
         {!shop ? (
