@@ -4,8 +4,6 @@ import { redirect } from "next/navigation";
 import UserMenu from "@/components/UserMenu";
 import prisma from "@/lib/prisma";
 
-import SettingsForm from "@/components/SettingsForm";
-
 export default async function SettingsPage() {
   const session = await getSession();
   if (!session) redirect("/login");
@@ -38,22 +36,31 @@ export default async function SettingsPage() {
         </div>
 
         <div className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-sm">
-          <div className="flex items-center gap-6 pb-8 mb-8 border-b border-slate-100">
-            <div className="w-20 h-20 bg-gradient-to-br from-orange-100 to-red-100 text-orange-600 rounded-full flex items-center justify-center text-3xl font-black shadow-inner">
-              {owner.name.charAt(0).toUpperCase() || "O"}
+          <div className="flex items-center gap-6 pb-8 border-b border-slate-100">
+            <div className="w-20 h-20 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-3xl font-black">
+              {owner.name.charAt(0).toUpperCase()}
             </div>
             <div>
-              <h2 className="text-2xl font-black text-slate-900">{owner.name || "Shop Owner"}</h2>
-              <p className="text-slate-500 font-medium">{owner.email}</p>
+              <h2 className="text-xl font-bold text-slate-900">{owner.name}</h2>
+              <p className="text-slate-500">{owner.email}</p>
             </div>
           </div>
 
-          <SettingsForm owner={{
-            name: owner.name,
-            email: owner.email,
-            phone: owner.phone,
-            autoReplyEnabled: owner.autoReplyEnabled
-          }} />
+          <div className="py-8">
+            <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100">
+              <div>
+                <p className="font-bold text-slate-900">AI Auto-Replies</p>
+                <p className="text-sm text-slate-500">Automatically reply to new Google reviews.</p>
+              </div>
+              <div className="w-12 h-6 bg-emerald-500 rounded-full relative shadow-inner">
+                <div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm" />
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-8 border-t border-slate-100 text-center">
+            <p className="text-slate-400 text-sm font-medium">More settings coming soon.</p>
+          </div>
         </div>
       </div>
     </main>

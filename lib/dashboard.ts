@@ -17,6 +17,8 @@ interface DashboardShop {
   qrCodeUrl: string;
   isActive: boolean;
   googleReviewUrl: string;
+  googleMapsUrl: string;
+  googleLocationId: string | null;
 }
 
 interface DashboardMetrics {
@@ -45,11 +47,18 @@ interface SubscriptionSnapshot {
   daysLeft: number | null;
 }
 
+interface GoogleConnectionSnapshot {
+  connected: boolean;
+  autoReplyEnabled: boolean;
+  businessLinked: boolean;
+}
+
 export interface DashboardData {
   shop: DashboardShop | null;
   metrics: DashboardMetrics;
   recentNegativeReviews: NegativeReview[];
   subscription: SubscriptionSnapshot;
+  googleConnection: GoogleConnectionSnapshot;
   ownerName: string;
 }
 
@@ -71,6 +80,8 @@ export async function getDashboardData(ownerId: string): Promise<DashboardData> 
       subscriptionStatus: true,
       subscriptionPlan: true,
       trialEndsAt: true,
+      googleRefreshToken: true,
+      autoReplyEnabled: true,
       shops: {
         orderBy: { createdAt: "asc" },
         select: {
@@ -82,6 +93,8 @@ export async function getDashboardData(ownerId: string): Promise<DashboardData> 
           qrCodeUrl: true,
           isActive: true,
           googleReviewUrl: true,
+          googleMapsUrl: true,
+          googleLocationId: true,
         },
       },
     },
@@ -104,12 +117,19 @@ export async function getDashboardData(ownerId: string): Promise<DashboardData> 
     daysLeft,
   };
 
+  const googleConnection: GoogleConnectionSnapshot = {
+    connected: Boolean(owner.googleRefreshToken),
+    autoReplyEnabled: owner.autoReplyEnabled,
+    businessLinked: Boolean(owner.shops[0]?.googleLocationId),
+  };
+
   const shop = owner.shops[0] ?? null;
   if (!shop) {
     return {
       ownerName: owner.name,
       shop: null,
       subscription,
+      googleConnection,
       recentNegativeReviews: [],
       metrics: {
         totalReviewsThisMonth: 0,
@@ -186,8 +206,10 @@ export async function getDashboardData(ownerId: string): Promise<DashboardData> 
       ...shop,
       qrCodeUrl: shop.qrCodeUrl || "",
       googleReviewUrl: shop.googleReviewUrl || "",
+      googleMapsUrl: shop.googleMapsUrl || "",
     },
     subscription,
+    googleConnection,
     metrics: {
       totalReviewsThisMonth: totals.total,
       publicReviewsThisMonth: totals.public,
