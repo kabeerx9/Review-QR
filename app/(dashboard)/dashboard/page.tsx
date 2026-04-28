@@ -2,32 +2,11 @@ import { getSession } from "@/lib/auth";
 import { getDashboardData } from "@/lib/dashboard";
 import { NICHE_CATEGORIES } from "@/constants/niches";
 import DashboardShopActions from "@/components/DashboardShopActions";
+import RatingTrendChart from "@/components/RatingTrendChart";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import UserMenu from "@/components/UserMenu";
-
-interface TrendBarProps {
-  label: string;
-  avg: number;
-  count: number;
-}
-
-function TrendBar({ label, avg, count }: TrendBarProps) {
-  const pct = Math.min(100, Math.max(4, (avg / 5) * 100));
-  return (
-    <div>
-      <div className="mb-1 flex items-center justify-between text-xs font-semibold text-slate-500">
-        <span>{label}</span>
-        <span>{count} reviews</span>
-      </div>
-      <div className="h-2 overflow-hidden rounded-full bg-slate-100">
-        <div className="h-full rounded-full bg-linear-to-r from-orange-400 to-red-500" style={{ width: `${pct}%` }} />
-      </div>
-      <p className="mt-1 text-xs font-bold text-slate-700">{avg.toFixed(2)} / 5</p>
-    </div>
-  );
-}
 
 export default async function DashboardPage() {
   const session = await getSession();
@@ -147,16 +126,7 @@ export default async function DashboardPage() {
                 {data.metrics.ratingTrend.length === 0 ? (
                   <p className="text-sm font-medium text-slate-500">Not enough review activity this month yet.</p>
                 ) : (
-                  <div className="space-y-4">
-                    {data.metrics.ratingTrend.map((point) => (
-                      <TrendBar
-                        key={point.date}
-                        label={new Date(point.date).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
-                        avg={point.avg}
-                        count={point.count}
-                      />
-                    ))}
-                  </div>
+                  <RatingTrendChart data={data.metrics.ratingTrend} />
                 )}
               </section>
 

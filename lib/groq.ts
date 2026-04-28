@@ -90,37 +90,3 @@ Output ONLY the review text. No quotes, no explanation, no preamble.`;
   return runGroqPrompt(prompt, 0.85);
 }
 
-export interface MonthlyInsightInput {
-  shopName: string;
-  city: string;
-  niche: string;
-  totalReviews: number;
-  categoryAverages: [number, number, number, number];
-  categories: [string, string, string, string];
-  weakestCategory: string;
-}
-
-export async function generateMonthlyInsight(input: MonthlyInsightInput): Promise<string> {
-  const nicheLabel = NICHE_LABELS[input.niche] ?? input.niche;
-  const prompt = `You are a practical growth advisor for an Indian local business owner.
-
-Shop: ${input.shopName} in ${input.city} (${nicheLabel})
-Period: last 30 days
-Total reviews: ${input.totalReviews}
-Average ratings:
-- ${input.categories[0]}: ${input.categoryAverages[0].toFixed(2)}/5
-- ${input.categories[1]}: ${input.categoryAverages[1].toFixed(2)}/5
-- ${input.categories[2]}: ${input.categoryAverages[2].toFixed(2)}/5
-- ${input.categories[3]}: ${input.categoryAverages[3].toFixed(2)}/5
-Notable weakness: ${input.weakestCategory}
-
-Write 2-3 short, actionable Hinglish sentences for the owner.
-Rules:
-- Be specific to this data
-- Mention weakest category first
-- Include one practical next step they can execute this week
-- Keep tone direct and friendly
-- Output ONLY the insight text`;
-
-  return runGroqPrompt(prompt, 0.6);
-}
