@@ -41,9 +41,12 @@ export default function RatingTrendChart({ data }: RatingTrendChartProps) {
             labelFormatter={(value) =>
               `Week of ${new Date(String(value)).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}`
             }
-            formatter={(value: number, name: string) =>
-              name === "avg" ? [`${value.toFixed(2)} / 5`, "Average Rating"] : [value, "Review Count"]
-            }
+            formatter={(value, name) => {
+              const numericValue = typeof value === "number" ? value : Number(value ?? 0);
+              return name === "avg"
+                ? [`${numericValue.toFixed(2)} / 5`, "Average Rating"]
+                : [numericValue, "Review Count"];
+            }}
           />
           <Line
             type="monotone"
