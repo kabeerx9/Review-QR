@@ -37,12 +37,13 @@ export async function POST(req: NextRequest) {
     return res;
   } catch (error) {
     const message = error instanceof Error ? error.message : "signup_failed";
+    const stack = error instanceof Error ? error.stack : "";
     if (message === "missing_jwt_secret") {
       return NextResponse.json(
         { error: "missing_jwt_secret", message: "Set JWT_SECRET in .env.local" },
         { status: 500 },
       );
     }
-    return NextResponse.json({ error: "signup_failed" }, { status: 500 });
+    return NextResponse.json({ error: "signup_failed", detail: message, stack }, { status: 500 });
   }
 }

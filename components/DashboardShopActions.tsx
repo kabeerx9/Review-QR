@@ -24,20 +24,18 @@ export default function DashboardShopActions({ reviewLink, qrCodeUrl }: Dashboar
   }
 
   return (
-    <div className="mt-4 flex flex-wrap gap-2">
-      <a
-        href={qrCodeUrl || "#"}
-        download="reviewqr-code.png"
-        className="rounded-xl bg-orange-500 px-3 py-2 text-sm font-semibold text-white"
-      >
-        Download QR
+    <div className="space-y-2.5 pt-2">
+      <a href={qrCodeUrl || "#"} download="reviewqr-code.png" className="btn-main w-full py-2.5 text-sm block text-center">
+        ⬇ Download QR
       </a>
-      <button type="button" onClick={copyLink} className="rounded-xl border px-3 py-2 text-sm font-medium">
-        {copied ? "Copied!" : "Copy Review Link"}
-      </button>
-      <button type="button" onClick={logout} className="rounded-xl border px-3 py-2 text-sm font-medium">
-        Logout
-      </button>
+      <div className="flex gap-2.5">
+        <button type="button" onClick={copyLink} className="btn-ghost flex-1 py-2.5 text-sm">
+          {copied ? "✓ Copied!" : "📋 Copy Link"}
+        </button>
+        <button type="button" onClick={logout} className="btn-ghost py-2.5 px-4 text-sm">
+          Logout
+        </button>
+      </div>
     </div>
   );
 }

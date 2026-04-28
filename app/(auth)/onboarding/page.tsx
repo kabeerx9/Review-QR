@@ -41,83 +41,71 @@ export default function OnboardingPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-zinc-50 px-4">
-      <form onSubmit={onSubmit} className="w-full max-w-lg space-y-5 rounded-2xl border bg-white p-6 shadow-sm">
-        <h1 className="text-2xl font-semibold">Setup your shop</h1>
+    <main className="flex min-h-screen items-center justify-center bg-[var(--bg-primary)] px-5 py-12">
+      <div className="fixed inset-0 bg-noise pointer-events-none" />
 
-        {step === 1 ? (
-          <>
-            <input
-              type="text"
-              required
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              placeholder="Shop name"
-              className="w-full rounded-xl border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-orange-400"
-            />
-            <input
-              type="text"
-              required
-              value={city}
-              onChange={(event) => setCity(event.target.value)}
-              placeholder="City"
-              className="w-full rounded-xl border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-orange-400"
-            />
-            <select
-              value={niche}
-              onChange={(event) => setNiche(event.target.value)}
-              className="w-full rounded-xl border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-orange-400"
-            >
-              {nicheOptions.map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-            <button
-              type="button"
-              onClick={() => setStep(2)}
-              className="w-full rounded-xl bg-orange-500 py-2 text-sm font-semibold text-white"
-            >
-              Continue
-            </button>
-          </>
-        ) : (
-          <>
-            <input
-              type="url"
-              value={googleReviewUrl}
-              onChange={(event) => setGoogleReviewUrl(event.target.value)}
-              placeholder="Google Review URL (optional)"
-              className="w-full rounded-xl border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-orange-400"
-            />
-            <input
-              type="url"
-              value={googleMapsUrl}
-              onChange={(event) => setGoogleMapsUrl(event.target.value)}
-              placeholder="Google Maps URL (optional)"
-              className="w-full rounded-xl border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-orange-400"
-            />
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="w-full rounded-xl border py-2 text-sm font-semibold"
-              >
-                Back
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full rounded-xl bg-orange-500 py-2 text-sm font-semibold text-white disabled:opacity-50"
-              >
-                {loading ? "Creating..." : "Create Shop"}
+      <form onSubmit={onSubmit} className="relative z-10 w-full max-w-lg space-y-6 anim-slide">
+        {/* Header */}
+        <div className="text-center">
+          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500/20 to-red-500/20 text-2xl mb-3">🏪</div>
+          <h1 className="text-2xl font-bold text-white">Setup your shop</h1>
+          <p className="mt-1 text-sm text-[var(--text-secondary)]">This takes about 30 seconds</p>
+        </div>
+
+        {/* Progress bar */}
+        <div className="flex items-center gap-3">
+          <div className="flex-1 h-1.5 rounded-full overflow-hidden bg-white/[0.06]">
+            <div className={`h-full rounded-full bg-gradient-to-r from-orange-500 to-red-500 transition-all duration-500 ${step === 1 ? 'w-1/2' : 'w-full'}`} />
+          </div>
+          <span className="text-xs font-medium text-[var(--text-muted)]">{step}/2</span>
+        </div>
+
+        <div className="card-static p-6">
+          {step === 1 ? (
+            <div className="space-y-4 anim-fade">
+              <p className="text-xs font-medium uppercase tracking-wider text-[var(--text-muted)]">Shop Details</p>
+              <div>
+                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">Shop name</label>
+                <input type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Spice Garden" className="field" />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">City</label>
+                <input type="text" required value={city} onChange={(e) => setCity(e.target.value)} placeholder="e.g. Jaipur" className="field" />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">Business type</label>
+                <select value={niche} onChange={(e) => setNiche(e.target.value)} className="field">
+                  {nicheOptions.map(([value, label]) => (
+                    <option key={value} value={value}>{label}</option>
+                  ))}
+                </select>
+              </div>
+              <button type="button" onClick={() => setStep(2)} className="btn-main w-full py-3">
+                Continue →
               </button>
             </div>
-          </>
-        )}
+          ) : (
+            <div className="space-y-4 anim-fade">
+              <p className="text-xs font-medium uppercase tracking-wider text-[var(--text-muted)]">Google Links (Optional)</p>
+              <div>
+                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">Google Review URL</label>
+                <input type="url" value={googleReviewUrl} onChange={(e) => setGoogleReviewUrl(e.target.value)} placeholder="https://g.page/..." className="field" />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">Google Maps URL</label>
+                <input type="url" value={googleMapsUrl} onChange={(e) => setGoogleMapsUrl(e.target.value)} placeholder="https://maps.google.com/..." className="field" />
+              </div>
+              <div className="flex gap-3">
+                <button type="button" onClick={() => setStep(1)} className="btn-ghost flex-1 py-3">← Back</button>
+                <button type="submit" disabled={loading} className="btn-main flex-1 py-3">
+                  {loading ? "Creating..." : "Create Shop ✓"}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
 
-        {error ? <p className="text-sm text-red-600">{error}</p> : null}
+        {error && <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">{error}</p>}
       </form>
     </main>
   );

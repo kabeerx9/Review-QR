@@ -21,35 +21,33 @@ export default async function OnboardingSuccessPage({ searchParams }: Onboarding
 
   const qrCodeUrl = shop?.qrCodeUrl || "";
 
-
   return (
-    <main className="flex min-h-screen items-center justify-center bg-zinc-50 px-4">
-      <div className="w-full max-w-lg space-y-5 rounded-2xl border bg-white p-6 text-center shadow-sm">
-        <h1 className="text-2xl font-semibold">Your QR code is ready! 🎉</h1>
+    <main className="flex min-h-screen items-center justify-center bg-[var(--bg-primary)] px-5 py-12">
+      <div className="fixed inset-0 bg-noise pointer-events-none" />
+
+      <div className="relative z-10 w-full max-w-md text-center space-y-6 anim-scale">
+        <div className="text-5xl">🎉</div>
+        <h1 className="text-3xl font-bold heading-accent">You&apos;re all set!</h1>
+        <p className="text-[var(--text-secondary)]">Your QR code is ready. Print it and place it at your shop.</p>
+
         {qrCodeUrl ? (
-          <Image
-            src={qrCodeUrl}
-            alt="Shop QR code"
-            width={256}
-            height={256}
-            className="mx-auto rounded-xl border p-2"
-          />
+          <div className="card-static p-6 inline-block">
+            <div className="bg-white p-3 rounded-xl inline-block">
+              <Image src={qrCodeUrl} alt="Shop QR code" width={200} height={200} className="rounded-lg" />
+            </div>
+          </div>
         ) : (
-          <p className="text-sm text-zinc-500">Loading QR...</p>
+          <div className="card-static p-8">
+            <p className="text-sm text-[var(--text-muted)]">Generating QR...</p>
+          </div>
         )}
-        <div className="space-y-2">
-          <a
-            href={qrCodeUrl}
-            download="reviewqr-code.png"
-            className="block w-full rounded-xl bg-orange-500 py-2 text-sm font-semibold text-white"
-          >
-            Download QR Code
+
+        <div className="space-y-3">
+          <a href={qrCodeUrl} download="reviewqr-code.png" className="btn-main w-full py-3 block">
+            ⬇ Download QR Code
           </a>
-          <Link
-            href="/dashboard"
-            className="block w-full rounded-xl border py-2 text-sm font-semibold text-zinc-700"
-          >
-            Go to Dashboard
+          <Link href="/dashboard" className="btn-ghost w-full py-3 block">
+            Go to Dashboard →
           </Link>
         </div>
       </div>
