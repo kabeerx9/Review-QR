@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LogOut, Settings, CreditCard, User } from "lucide-react";
+import { LogOut, Settings, CreditCard, User, Building2 } from "lucide-react";
 
 export default function UserMenu({ ownerName }: { ownerName: string }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -66,6 +66,14 @@ export default function UserMenu({ ownerName }: { ownerName: string }) {
             >
               <CreditCard className="w-4 h-4" />
               Billing
+            </Link>
+            <Link 
+              href="/google-business" 
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-3 w-full p-2.5 text-sm font-bold text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition-colors"
+            >
+              <Building2 className="w-4 h-4" />
+              Google Business
             </Link>
           </div>
           

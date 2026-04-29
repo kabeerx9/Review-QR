@@ -51,6 +51,8 @@ export interface DashboardData {
   recentNegativeReviews: NegativeReview[];
   subscription: SubscriptionSnapshot;
   ownerName: string;
+  googleConnected: boolean;
+  autoReplyEnabled: boolean;
 }
 
 function toWeekBucket(date: Date): string {
@@ -71,6 +73,8 @@ export async function getDashboardData(ownerId: string): Promise<DashboardData> 
       subscriptionStatus: true,
       subscriptionPlan: true,
       trialEndsAt: true,
+      googleAccessToken: true,
+      autoReplyEnabled: true,
       shops: {
         orderBy: { createdAt: "asc" },
         select: {
@@ -104,6 +108,9 @@ export async function getDashboardData(ownerId: string): Promise<DashboardData> 
     daysLeft,
   };
 
+  const googleConnected = !!owner.googleAccessToken;
+  const autoReplyEnabled = owner.autoReplyEnabled;
+
   const shop = owner.shops[0] ?? null;
   if (!shop) {
     return {
@@ -111,6 +118,8 @@ export async function getDashboardData(ownerId: string): Promise<DashboardData> 
       shop: null,
       subscription,
       recentNegativeReviews: [],
+      googleConnected,
+      autoReplyEnabled,
       metrics: {
         totalReviewsThisMonth: 0,
         publicReviewsThisMonth: 0,
@@ -182,6 +191,8 @@ export async function getDashboardData(ownerId: string): Promise<DashboardData> 
 
   return {
     ownerName: owner.name,
+    googleConnected,
+    autoReplyEnabled,
     shop: {
       ...shop,
       qrCodeUrl: shop.qrCodeUrl || "",
