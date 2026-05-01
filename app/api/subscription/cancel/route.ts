@@ -27,16 +27,13 @@ export async function POST() {
   try {
     await razorpay.subscriptions.cancel(owner.razorpaySubscriptionId);
 
-    // Update owner status
+    // Update status immediately for instant UI feedback.
+    // Keep razorpaySubscriptionId so the webhook can still find the owner.
     await prisma.owner.update({
       where: { id: owner.id },
-      data: {
-        subscriptionStatus: "CANCELLED",
-        razorpaySubscriptionId: null,
-      },
+      data: { subscriptionStatus: "CANCELLED" },
     });
 
-    // Deactivate all shops
     await prisma.shop.updateMany({
       where: { ownerId: owner.id },
       data: { isActive: false },
