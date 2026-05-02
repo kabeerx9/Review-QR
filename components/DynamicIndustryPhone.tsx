@@ -34,7 +34,7 @@ export function DynamicIndustryPhone({ activeNiche }: { activeNiche: any }) {
   const reviewText = predefinedReviews[activeNiche.id] || "Great experience!";
 
   return (
-    <div className="bg-slate-50 rounded-[3rem] border border-slate-200 p-8 shadow-inner relative h-[500px] flex items-center justify-center overflow-hidden w-full">
+    <div className="bg-slate-50 rounded-[2rem] lg:rounded-[3rem] border border-slate-200 p-6 lg:p-8 shadow-inner relative h-[380px] lg:h-[500px] flex items-center justify-center overflow-hidden w-full">
       <AnimatePresence mode="wait">
         <motion.div 
           key={activeNiche.id}

@@ -177,23 +177,30 @@ function ScrollLinkedExperience() {
             <h3 className="text-2xl md:text-5xl font-black text-slate-900 tracking-tight">Scroll to see the magic happen.</h3>
           </div>
 
-          <div className="grid lg:grid-cols-[1fr_1.2fr] gap-8 lg:gap-20 items-center bg-white rounded-[3rem] border border-slate-200 p-8 shadow-2xl relative">
-            {/* Left: Text Steps */}
-            <div className="space-y-3 lg:space-y-4">
+          <div className="grid lg:grid-cols-[1fr_1.2fr] gap-4 lg:gap-20 items-center bg-white rounded-[2rem] lg:rounded-[3rem] border border-slate-200 p-4 lg:p-8 shadow-2xl relative">
+            {/* Left: Text Steps (Desktop) */}
+            <div className="space-y-4 hidden lg:block">
               {timelineSteps.map((step, index) => (
                 <div 
                   key={index}
-                  className={`p-5 lg:p-6 rounded-[2rem] transition-all duration-500 ${activeIndex === index ? 'bg-slate-50 border border-slate-200 shadow-sm scale-[1.02] opacity-100' : 'border border-transparent opacity-30 grayscale'}`}
+                  className={`p-6 rounded-[2rem] transition-all duration-500 ${activeIndex === index ? 'bg-slate-50 border border-slate-200 shadow-sm scale-[1.02] opacity-100' : 'border border-transparent opacity-30 grayscale'}`}
                 >
                   <p className="text-xs font-black uppercase tracking-widest text-orange-500 mb-2">{step.tag}</p>
-                  <h4 className="text-lg lg:text-2xl font-black text-slate-900 mb-2 lg:mb-3">{step.title}</h4>
-                  <p className="text-sm lg:text-base text-slate-600 font-medium leading-relaxed">{step.body}</p>
+                  <h4 className="text-2xl font-black text-slate-900 mb-3">{step.title}</h4>
+                  <p className="text-base text-slate-600 font-medium leading-relaxed">{step.body}</p>
                 </div>
               ))}
             </div>
 
+            {/* Mobile: Active Step Text */}
+            <div className="lg:hidden p-4 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm text-center">
+              <p className="text-[10px] font-black uppercase tracking-widest text-orange-500 mb-1">{timelineSteps[activeIndex].tag}</p>
+              <h4 className="text-lg font-black text-slate-900 mb-1">{timelineSteps[activeIndex].title}</h4>
+              <p className="text-xs text-slate-600 font-medium">{timelineSteps[activeIndex].body}</p>
+            </div>
+
             {/* Right: Dynamic Visual */}
-            <div className="relative h-[350px] lg:h-[550px] w-full bg-slate-100 rounded-[2.5rem] border border-slate-200 overflow-hidden shadow-inner">
+            <div className="relative h-[250px] md:h-[350px] lg:h-[550px] w-full bg-slate-100 rounded-[1.5rem] lg:rounded-[2.5rem] border border-slate-200 overflow-hidden shadow-inner">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeIndex}
@@ -246,9 +253,9 @@ export default function Home() {
 
           <div className="hidden items-center gap-8 text-sm font-bold text-slate-500 md:flex">
             <a href="#how" className="transition-colors hover:text-orange-600">The Experience</a>
-            <a href="#autopilot" className="transition-colors hover:text-orange-600">AI Autopilot</a>
-            <a href="#industry" className="transition-colors hover:text-orange-600">Industries</a>
             <a href="#pricing" className="transition-colors hover:text-orange-600">Pricing</a>
+            <Link href="/tools/google-review-qr-code-generator" className="transition-colors hover:text-orange-600">Free Tools</Link>
+            <Link href="/blog" className="transition-colors hover:text-orange-600">Blog</Link>
           </div>
 
           <div className="flex items-center gap-4">
@@ -446,23 +453,23 @@ export default function Home() {
       {/* ═══ DYNAMIC INDUSTRY TABS ═══ */}
       <section id="industry" className="relative z-10 py-32 px-6 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-slate-400 font-black tracking-widest uppercase text-sm mb-4">Hyper-Customized</h2>
-            <h3 className="text-2xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">Built exactly for your industry.</h3>
-            <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto font-medium">Your customers answer questions that actually matter to your business. A hotel shouldn't ask about haircuts.</p>
+          <div className="text-center mb-8 lg:mb-16">
+            <h2 className="text-slate-400 font-black tracking-widest uppercase text-sm mb-2 lg:mb-4">Hyper-Customized</h2>
+            <h3 className="text-2xl md:text-5xl font-black text-slate-900 mb-4 lg:mb-6 tracking-tight">Built exactly for your industry.</h3>
+            <p className="text-sm md:text-xl text-slate-600 max-w-2xl mx-auto font-medium">Your customers answer questions that actually matter to your business. A hotel shouldn't ask about haircuts.</p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Tabs Grid */}
-            <div className="grid grid-cols-2 gap-4">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+            {/* Tabs Grid (Horizontal Scroll on Mobile) */}
+            <div className="flex overflow-x-auto gap-3 pb-2 lg:pb-0 lg:grid lg:grid-cols-2 lg:gap-4 snap-x hide-scrollbar">
               {niches.map((n) => (
                 <button 
                   key={n.id}
                   onClick={() => setActiveNiche(n)}
-                  className={`text-left p-5 rounded-[2rem] transition-all duration-300 ${activeNiche.id === n.id ? 'bg-orange-50 border-2 border-orange-500 shadow-md scale-105 z-10' : 'bg-slate-50 border-2 border-transparent hover:bg-slate-100'}`}
+                  className={`shrink-0 snap-center w-[160px] lg:w-auto text-left p-4 lg:p-5 rounded-[1.5rem] lg:rounded-[2rem] transition-all duration-300 ${activeNiche.id === n.id ? 'bg-orange-50 border-2 border-orange-500 shadow-md lg:scale-105 z-10' : 'bg-slate-50 border-2 border-transparent hover:bg-slate-100'}`}
                 >
-                  <div className="text-3xl mb-3">{n.emoji}</div>
-                  <h4 className={`text-lg font-black ${activeNiche.id === n.id ? 'text-orange-900' : 'text-slate-700'}`}>{n.name}</h4>
+                  <div className="text-2xl lg:text-3xl mb-2 lg:mb-3">{n.emoji}</div>
+                  <h4 className={`text-base lg:text-lg font-black ${activeNiche.id === n.id ? 'text-orange-900' : 'text-slate-700'}`}>{n.name}</h4>
                 </button>
               ))}
             </div>
@@ -597,6 +604,26 @@ export default function Home() {
               </ul>
             </div>
             
+            <div>
+              <h4 className="font-black text-slate-900 mb-6 uppercase tracking-widest text-sm">Free Tools</h4>
+              <ul className="space-y-4 text-slate-600 font-bold">
+                <li><Link href="/tools/google-review-qr-code-generator" className="hover:text-orange-600 transition-colors">Free Review QR Generator</Link></li>
+                <li><Link href="/tools/google-review-link-generator" className="hover:text-orange-600 transition-colors">Review Link Generator</Link></li>
+                <li><Link href="/tools/review-reply-generator" className="hover:text-orange-600 transition-colors">AI Reply Generator</Link></li>
+                <li><Link href="/tools/google-review-roi-calculator" className="hover:text-orange-600 transition-colors">ROI Calculator</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-black text-slate-900 mb-6 uppercase tracking-widest text-sm">Blog</h4>
+              <ul className="space-y-4 text-slate-600 font-bold">
+                <li><Link href="/blog" className="hover:text-orange-600 transition-colors">All Articles</Link></li>
+                <li><Link href="/blog/how-to-remove-fake-google-reviews" className="hover:text-orange-600 transition-colors">Remove Fake Reviews</Link></li>
+                <li><Link href="/blog/why-reply-to-google-reviews" className="hover:text-orange-600 transition-colors">Replying to Reviews</Link></li>
+                <li><Link href="/blog/increase-restaurant-footfall-2026" className="hover:text-orange-600 transition-colors">Increase Footfall</Link></li>
+              </ul>
+            </div>
+
             <div>
               <h4 className="font-black text-slate-900 mb-6 uppercase tracking-widest text-sm">Company</h4>
               <ul className="space-y-4 text-slate-600 font-bold">

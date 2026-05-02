@@ -15,9 +15,38 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "ReviewQR | Turn Happy Customers into Google Reviews",
+  title: "ReviewQR | Get More 5-Star Google Reviews Automatically",
   description:
-    "Offline businesses get a QR code that turns great customer moments into Google reviews while routing weak experiences into private feedback.",
+    "ReviewQR helps local businesses increase Google ratings. Our smart QR code flow routes happy customers to Google and intercepts unhappy ones for private feedback.",
+  keywords: ["Google reviews", "reputation management", "QR code reviews", "local SEO", "get 5 star reviews"],
+  metadataBase: new URL("https://reviewqr.com"), // Replace with actual domain
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: "ReviewQR | Get More 5-Star Google Reviews Automatically",
+    description: "Turn your daily footfall into permanent digital reputation. Get more 5-star reviews and intercept bad feedback.",
+    url: 'https://reviewqr.com',
+    siteName: 'ReviewQR',
+    locale: 'en_IN',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'ReviewQR | Get More 5-Star Google Reviews Automatically',
+    description: 'Turn your daily footfall into permanent digital reputation. Get more 5-star reviews and intercept bad feedback.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export default function RootLayout({
