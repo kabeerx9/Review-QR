@@ -3,6 +3,10 @@
 import Link from "next/link";
 import { motion, AnimatePresence, useScroll, useTransform, type Variants } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
+import { HeroAnimatedMockup } from "../components/HeroAnimatedMockup";
+import { DynamicIndustryPhone } from "../components/DynamicIndustryPhone";
+import { MagneticButton } from "../components/MagneticButton";
+import { LiveToasts } from "../components/LiveToasts";
 
 // Icons
 const ArrowRight = () => (
@@ -170,7 +174,7 @@ function ScrollLinkedExperience() {
           
           <div className="text-center mb-8 lg:mb-12">
             <h2 className="text-orange-600 font-black tracking-widest uppercase text-sm mb-4">The Experience</h2>
-            <h3 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">Scroll to see the magic happen.</h3>
+            <h3 className="text-2xl md:text-5xl font-black text-slate-900 tracking-tight">Scroll to see the magic happen.</h3>
           </div>
 
           <div className="grid lg:grid-cols-[1fr_1.2fr] gap-8 lg:gap-20 items-center bg-white rounded-[3rem] border border-slate-200 p-8 shadow-2xl relative">
@@ -182,7 +186,7 @@ function ScrollLinkedExperience() {
                   className={`p-5 lg:p-6 rounded-[2rem] transition-all duration-500 ${activeIndex === index ? 'bg-slate-50 border border-slate-200 shadow-sm scale-[1.02] opacity-100' : 'border border-transparent opacity-30 grayscale'}`}
                 >
                   <p className="text-xs font-black uppercase tracking-widest text-orange-500 mb-2">{step.tag}</p>
-                  <h4 className="text-xl lg:text-2xl font-black text-slate-900 mb-2 lg:mb-3">{step.title}</h4>
+                  <h4 className="text-lg lg:text-2xl font-black text-slate-900 mb-2 lg:mb-3">{step.title}</h4>
                   <p className="text-sm lg:text-base text-slate-600 font-medium leading-relaxed">{step.body}</p>
                 </div>
               ))}
@@ -214,6 +218,12 @@ function ScrollLinkedExperience() {
 
 export default function Home() {
   const [activeNiche, setActiveNiche] = useState(niches[0]);
+  const { scrollY } = useScroll();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setIsScrolled(latest > 50);
+  });
 
   return (
     <main className="min-h-screen bg-[#FAFAFA] text-slate-900 selection:bg-orange-200 selection:text-orange-900 font-sans">
@@ -225,8 +235,8 @@ export default function Home() {
       </div>
 
       {/* ═══ NAVBAR ═══ */}
-      <nav className="fixed top-0 inset-x-0 z-50 border-b border-slate-200/50 bg-white/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+      <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${isScrolled ? 'py-2' : 'py-0'}`}>
+        <div className={`mx-auto flex max-w-7xl items-center justify-between px-6 transition-all duration-500 ${isScrolled ? 'py-3 bg-white/70 backdrop-blur-xl border border-slate-200/50 shadow-lg rounded-full mt-4' : 'py-4 bg-white/0 border-b border-transparent'}`}>
           <Link href="/" className="flex items-center gap-3 group">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 text-white font-black text-lg shadow-md transition-transform group-hover:scale-105">
               RQ
@@ -245,15 +255,18 @@ export default function Home() {
             <Link href="/login" className="hidden sm:block text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">
               Log in
             </Link>
-            <Link href="/signup" className="rounded-full bg-slate-900 px-6 py-2.5 text-sm font-bold text-white transition-transform hover:scale-105 shadow-lg hover:bg-slate-800">
-              Start Free
-            </Link>
+            <MagneticButton>
+              <Link href="/signup" className="rounded-full bg-slate-900 px-6 py-2.5 text-sm font-bold text-white transition-transform hover:scale-105 shadow-lg hover:bg-slate-800">
+                Start Free
+              </Link>
+            </MagneticButton>
           </div>
         </div>
       </nav>
 
       {/* ═══ HERO SECTION ═══ */}
-      <section className="relative z-10 pt-32 pb-20 lg:pt-40 lg:pb-32 px-6 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
+      <div className="w-full overflow-hidden">
+        <section className="relative z-10 pt-32 pb-20 lg:pt-40 lg:pb-32 px-6 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
         <motion.div initial="hidden" animate="visible" variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.1 } } }} className="flex-1 text-center lg:text-left">
           <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-sm font-bold text-orange-700 shadow-sm mb-8 uppercase tracking-wider">
             <span className="relative flex h-2 w-2">
@@ -263,18 +276,20 @@ export default function Home() {
             Protecting 200+ local businesses
           </motion.div>
 
-          <motion.h1 variants={fadeUp} className="text-5xl sm:text-6xl lg:text-[5rem] font-black leading-[1.05] tracking-tight text-slate-900 mb-6">
-            Grow your Google rating. <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500">Automatically.</span>
+          <motion.h1 variants={fadeUp} className="text-3xl sm:text-5xl lg:text-[5rem] font-black leading-[1.05] tracking-tight text-slate-900 mb-6">
+            Grow your Google rating. <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500">Automatically!</span>
           </motion.h1>
 
-          <motion.p variants={fadeUp} className="text-xl text-slate-600 leading-relaxed mb-10 max-w-2xl mx-auto lg:mx-0 font-medium">
+          <motion.p variants={fadeUp} className="text-lg md:text-xl text-slate-600 leading-relaxed mb-10 max-w-2xl mx-auto lg:mx-0 font-medium">
             A frictionless QR flow that drafts 5-star Google reviews for happy customers, quietly intercepts bad feedback, and <strong className="text-slate-900">auto-replies to all your Google reviews</strong> like a real human.
           </motion.p>
 
           <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
-            <Link href="/signup" className="w-full sm:w-auto inline-flex items-center justify-center rounded-full bg-orange-500 px-8 py-4 text-lg font-black text-white transition-all hover:bg-orange-600 hover:scale-105 shadow-[0_8px_30px_rgba(249,115,22,0.3)]">
-              Get Your QR Code
-            </Link>
+            <MagneticButton>
+              <Link href="/signup" className="w-full sm:w-auto inline-flex items-center justify-center rounded-full bg-orange-500 px-8 py-4 text-lg font-black text-white transition-all hover:bg-orange-600 hover:scale-105 shadow-[0_8px_30px_rgba(249,115,22,0.3)]">
+                Get Your QR Code
+              </Link>
+            </MagneticButton>
             <a href="#how" className="w-full sm:w-auto inline-flex items-center justify-center rounded-full border-2 border-slate-200 bg-white px-8 py-4 text-lg font-bold text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50">
               See The Magic
             </a>
@@ -286,48 +301,9 @@ export default function Home() {
           </motion.div>
         </motion.div>
 
-        {/* Hero Interactive UI Mockup */}
-        <motion.div initial={{ opacity: 0, scale: 0.9, rotate: 2 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} transition={{ duration: 1, ease: "easeOut" }} className="flex-1 relative w-full max-w-[420px] mx-auto lg:ml-auto">
-          {/* Decorative Background Elements */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-tr from-orange-200/50 via-white/50 to-blue-200/50 rounded-full blur-[60px] -z-10" />
-          
-          <div className="relative rounded-[3rem] border-[10px] border-slate-900 bg-white shadow-2xl overflow-hidden aspect-[9/19]">
-            {/* Dynamic Island */}
-            <div className="absolute top-0 inset-x-0 h-7 bg-slate-900 rounded-b-3xl w-1/3 mx-auto z-20" />
-            
-            <div className="absolute inset-0 p-6 pt-16 flex flex-col bg-slate-50">
-              <div className="flex items-center gap-4 mb-8 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-                <div className="w-12 h-12 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-2xl shadow-inner">
-                  🏨
-                </div>
-                <div>
-                  <h3 className="font-bold text-slate-900 text-lg leading-tight">Grand Horizon Hotel</h3>
-                  <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">Rate your stay</p>
-                </div>
-              </div>
-
-              <div className="space-y-6 flex-1">
-                <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm relative">
-                  <div className="absolute -top-3 left-4 bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-md">
-                    AI Auto-Draft
-                  </div>
-                  <div className="flex gap-1 text-xl text-orange-400 mb-3">★★★★★</div>
-                  <p className="text-sm text-slate-600 font-medium leading-relaxed italic">
-                    &ldquo;The stay was absolutely fantastic! The room was spotless, the service was fast, and the breakfast buffet was delicious. Highly recommend!&rdquo;
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-auto relative z-10 pb-4">
-                <div className="w-full py-4 rounded-2xl bg-blue-600 text-white font-bold text-center shadow-[0_8px_20px_rgba(37,99,235,0.3)] flex justify-center items-center gap-2">
-                  <span className="bg-white text-blue-600 w-5 h-5 rounded-full flex items-center justify-center text-xs font-black">G</span>
-                  Post to Google
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      </section>
+        <HeroAnimatedMockup />
+        </section>
+      </div>
 
       {/* ═══ STATS BANNER ═══ */}
       <section className="relative z-10 border-y border-slate-200 bg-white shadow-sm">
@@ -342,7 +318,7 @@ export default function Home() {
                 transition={{ delay: i * 0.1 }}
                 className="text-center px-4"
               >
-                <div className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter mb-2">{s.value}</div>
+                <div className="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter mb-2">{s.value}</div>
                 <div className="text-[10px] md:text-xs text-slate-400 font-black uppercase tracking-widest">{s.label}</div>
               </motion.div>
             ))}
@@ -359,7 +335,7 @@ export default function Home() {
       <section className="relative z-10 py-24 bg-white overflow-hidden border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-6 text-center mb-16">
           <h2 className="text-orange-600 font-black tracking-widest uppercase text-sm mb-4">Wall of Love</h2>
-          <h3 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">Real Indian business owners.<br/>Real results.</h3>
+          <h3 className="text-2xl md:text-5xl font-black text-slate-900 tracking-tight">Real Indian business owners.<br/>Real results.</h3>
         </div>
 
         {/* Marquee Wrapper */}
@@ -408,10 +384,10 @@ export default function Home() {
             
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="space-y-8">
               <h2 className="text-orange-500 font-black tracking-widest uppercase text-sm">Zero-Touch Management</h2>
-              <h3 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tight">
+              <h3 className="text-2xl md:text-6xl font-black text-white leading-tight tracking-tight">
                 Put your Google Maps<br/>on Autopilot.
               </h3>
-              <p className="text-xl text-slate-300 leading-relaxed font-medium">
+              <p className="text-lg md:text-xl text-slate-300 leading-relaxed font-medium">
                 Never log into Google Business Profile again to reply to reviews. Our AI natively understands the customer's language and replies instantly, sounding 100% human.
               </p>
               
@@ -472,8 +448,8 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-slate-400 font-black tracking-widest uppercase text-sm mb-4">Hyper-Customized</h2>
-            <h3 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">Built exactly for your industry.</h3>
-            <p className="text-xl text-slate-600 max-w-2xl mx-auto font-medium">Your customers answer questions that actually matter to your business. A hotel shouldn't ask about haircuts.</p>
+            <h3 className="text-2xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight">Built exactly for your industry.</h3>
+            <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto font-medium">Your customers answer questions that actually matter to your business. A hotel shouldn't ask about haircuts.</p>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -491,37 +467,7 @@ export default function Home() {
               ))}
             </div>
 
-            {/* Dynamic UI Mockup based on selection */}
-            <div className="bg-slate-50 rounded-[3rem] border border-slate-200 p-8 shadow-inner relative min-h-[400px] flex items-center justify-center overflow-hidden">
-              <AnimatePresence mode="wait">
-                <motion.div 
-                  key={activeNiche.id}
-                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                  transition={{ duration: 0.3 }}
-                  className="w-full max-w-sm bg-white border border-slate-100 rounded-3xl p-6 shadow-xl relative z-10"
-                >
-                  <div className="text-center mb-8">
-                    <div className="text-4xl mb-4">{activeNiche.emoji}</div>
-                    <h5 className="font-black text-slate-900 text-xl">{activeNiche.mockup.title}</h5>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    {activeNiche.mockup.cats.map((cat, i) => (
-                      <div key={i} className="flex justify-between items-center bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                        <span className="font-bold text-slate-600 uppercase tracking-widest text-[10px]">{cat}</span>
-                        <div className="flex gap-1 text-orange-400 text-lg">★★★★★</div>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <div className="mt-8 w-full py-4 bg-slate-900 text-white font-bold rounded-xl text-center shadow-lg">
-                    Continue →
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
+            <DynamicIndustryPhone activeNiche={activeNiche} />
           </div>
         </div>
       </section>
@@ -531,8 +477,8 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-center max-w-2xl mx-auto mb-20">
             <h2 className="text-orange-600 font-black tracking-widest uppercase text-sm mb-4">Pricing</h2>
-            <h3 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tight mb-6">Pays for itself in 1 day.</h3>
-            <p className="text-xl text-slate-600 font-medium">Start with a 15-day free trial. No credit card required.</p>
+            <h3 className="text-2xl md:text-6xl font-black text-slate-900 tracking-tight mb-6">Pays for itself in 1 day.</h3>
+            <p className="text-lg md:text-xl text-slate-600 font-medium">Start with a 15-day free trial. No credit card required.</p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -551,11 +497,11 @@ export default function Home() {
                   </div>
                 )}
                 
-                <h4 className="text-2xl font-black mb-3">{p.name}</h4>
+                <h4 className="text-xl md:text-2xl font-black mb-3">{p.name}</h4>
                 <p className={`mb-8 font-bold ${p.pop ? 'text-slate-400' : 'text-slate-500'}`}>{p.desc}</p>
                 
                 <div className="mb-10 flex items-end gap-2">
-                  <span className="text-6xl font-black tracking-tighter">{p.price}</span>
+                  <span className="text-5xl md:text-6xl font-black tracking-tighter">{p.price}</span>
                   <span className={`text-lg font-bold pb-2 ${p.pop ? 'text-slate-400' : 'text-slate-500'}`}>{p.per}</span>
                 </div>
 
@@ -582,7 +528,7 @@ export default function Home() {
       {/* ═══ FAQ ═══ */}
       <section id="faq" className="relative z-10 mx-auto max-w-3xl px-6 py-24">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-black text-slate-900">Questions? Answers.</h2>
+          <h2 className="text-2xl md:text-5xl font-black text-slate-900">Questions? Answers.</h2>
         </div>
         
         <div className="space-y-4">
@@ -614,8 +560,8 @@ export default function Home() {
           <div className="absolute top-0 right-0 w-[50%] h-[100%] rounded-full bg-orange-500/20 blur-[120px] pointer-events-none" />
           
           <div className="relative z-10">
-            <h2 className="text-4xl md:text-7xl font-black text-white mb-8 tracking-tight">Ready to dominate<br/>local search?</h2>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto mb-12 font-medium leading-relaxed">
+            <h2 className="text-3xl md:text-7xl font-black text-white mb-8 tracking-tight">Ready to dominate<br/>local search?</h2>
+            <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-12 font-medium leading-relaxed">
               Join the smartest offline businesses who are automatically turning their daily footfall into permanent digital reputation.
             </p>
             
@@ -667,6 +613,25 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* ═══ LIVE TOASTS ═══ */}
+      <LiveToasts />
+
+      {/* ═══ MOBILE FLOATING CTA ═══ */}
+      <AnimatePresence>
+        {isScrolled && (
+          <motion.div
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 100 }}
+            className="fixed bottom-6 left-6 right-6 z-40 md:hidden pointer-events-auto"
+          >
+            <Link href="/signup" className="flex w-full items-center justify-center rounded-full bg-slate-900 px-8 py-4 text-base font-black text-white shadow-2xl active:scale-95 transition-transform border border-slate-700">
+              Start Free Trial
+            </Link>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
