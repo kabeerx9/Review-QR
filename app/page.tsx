@@ -7,6 +7,7 @@ import { HeroAnimatedMockup } from "../components/HeroAnimatedMockup";
 import { DynamicIndustryPhone } from "../components/DynamicIndustryPhone";
 import { MagneticButton } from "../components/MagneticButton";
 import { LiveToasts } from "../components/LiveToasts";
+import { ToolsDropdown } from "../components/ToolsDropdown";
 
 // Icons
 const ArrowRight = () => (
@@ -254,7 +255,7 @@ export default function Home() {
           <div className="hidden items-center gap-8 text-sm font-bold text-slate-500 md:flex">
             <a href="#how" className="transition-colors hover:text-orange-600">The Experience</a>
             <a href="#pricing" className="transition-colors hover:text-orange-600">Pricing</a>
-            <Link href="/tools/google-review-qr-code-generator" className="transition-colors hover:text-orange-600">Free Tools</Link>
+            <ToolsDropdown />
             <Link href="/blog" className="transition-colors hover:text-orange-600">Blog</Link>
           </div>
 
