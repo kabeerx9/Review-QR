@@ -31,7 +31,7 @@ export async function PATCH(req: NextRequest) {
     if (shopId && typeof specialties === "string") {
       await prisma.shop.update({
         where: { id: shopId, ownerId: session.ownerId },
-        data: { specialties },
+        data: { specialties } as any,
       });
     }
 
