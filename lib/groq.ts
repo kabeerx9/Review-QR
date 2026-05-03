@@ -74,10 +74,10 @@ export async function generateHinglishReview(input: ReviewInput): Promise<string
   ];
 
   const REVIEWER_PERSONAS = [
-    "A local resident who just stopped by.",
-    "Someone who came with their family/friends.",
-    "A first-time visitor trying it out.",
-    "Someone in a rush who appreciated the quick service."
+    "A highly satisfied client/customer writing a genuine review.",
+    "A client/customer who was impressed by the quality of service/product.",
+    "A first-time client/customer who had a great experience.",
+    "A regular client/customer who appreciates their consistency."
   ];
 
   const LANGUAGES = [
@@ -91,11 +91,12 @@ export async function generateHinglishReview(input: ReviewInput): Promise<string
   const toneInstruction = REVIEW_TONES[Math.floor(Math.random() * REVIEW_TONES.length)];
   const personaInstruction = REVIEWER_PERSONAS[Math.floor(Math.random() * REVIEWER_PERSONAS.length)];
   
-  // Dynamic temperature between 0.6 and 0.9 for variation
-  const temperature = 0.6 + Math.random() * 0.3;
+  // Dynamic temperature between 0.7 and 1.0 for extreme variation
+  const temperature = 0.7 + Math.random() * 0.3;
 
-  const nicheLabel = NICHE_LABELS[input.niche] ?? input.niche;
-  const specialtiesText = input.specialties ? `\n- Specializes in: ${input.specialties}` : "";
+  const isOther = input.niche === "OTHER" || input.niche === "Other (Please Specify)";
+  const nicheLabel = isOther ? (input.specialties || "Local Business") : (NICHE_LABELS[input.niche] ?? input.niche);
+  const specialtiesText = !isOther && input.specialties ? `\n- Specializes in: ${input.specialties}` : "";
 
   // Filter to only include things they rated 4 or 5
   const positiveRatings = input.categories
@@ -107,7 +108,7 @@ export async function generateHinglishReview(input: ReviewInput): Promise<string
     ? `Specific things I liked: ${positiveRatings.join(", ")}` 
     : "Overall experience was decent.";
 
-  const prompt = `You are a real Indian customer writing a genuine Google review.
+  const prompt = `You are a real Indian customer writing a highly authentic Google review.
 DO NOT ACT LIKE AN AI. Act like a human (${personaInstruction}).
 
 Context:
@@ -117,17 +118,19 @@ Context:
 - Key Highlights: ${ratingsText}
 
 Instructions for uniqueness & SEO (WITHOUT spamming):
+- RELATIONSHIP: If this is a 'Turf' or 'Sports Turf', you are a PLAYER who booked a slot and played a game there with friends. You did NOT buy a turf. Do NOT write about installation or construction. 
+- CONTEXT ADAPTATION: Adapt your persona perfectly to match what this business actually does. If it's a physical consumer location, write as a daily consumer who visited the premises. If it's a B2B service or manufacturer, write as a professional client. Never hallucinate purchasing the business itself.
 - MUST DO: Explicitly highlight and praise the specific things I liked: ${positiveRatings.join(", ")}. Do not ignore this.
 - Language: ${languageInstruction}
 - Tone: ${toneInstruction}
 - Length: ${lengthInstruction}
-- MAXIMUM length: strictly under 4 sentences. Keep it highly concise.
-- SEO: Naturally mention the shop name once and the city name if it makes sense. Do NOT sound like an advertisement. Use a relevant keyword naturally based on the Business Type. ${input.specialties ? `Crucially, try to naturally weave in one of these specialties into your review: "${input.specialties}".` : ""}
-- Start abruptly or naturally, do NOT start with "I visited", "Great experience", or "Highly recommended" every time. Vary the opening.
+- MAXIMUM length: strictly under 3 sentences. Keep it highly concise.
+- SEO: Use a relevant keyword naturally based on the Business Type. ${!isOther && input.specialties ? `Weave in one of these specialties naturally: "${input.specialties}".` : ""}
+- VARIETY: Start completely differently every time. Never start with "I recently visited", "Great experience", or "I am really impressed". Jump straight into the review (e.g. "Loved the vibe here...", "Booked a slot for...", "Amazing place to...").
 - Make it sound like a unique, personal experience.
 - DO NOT use hashtags.
 - Use 0 to 2 emojis.
-- Do NOT use robotic/marketing phrases ("This establishment", "Top-notch", "Aesthetically pleasing", "Delightful").
+- Do NOT use robotic/marketing phrases ("This establishment", "Top-notch", "Aesthetically pleasing", "Delightful", "Highly suggest").
 
 Output ONLY the review text. No quotes, no preamble, no markdown.`;
 
