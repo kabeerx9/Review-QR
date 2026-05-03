@@ -34,6 +34,7 @@ enum Niche {
   RETAIL
   CLINIC
   COACHING
+  OTHER
 }
 
 model Owner {

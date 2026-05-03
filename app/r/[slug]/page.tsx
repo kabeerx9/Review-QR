@@ -14,21 +14,19 @@ export default async function PublicReviewPage({ params }: RouteContext) {
 
   if (!shop.isActive) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[var(--bg-primary)] px-5">
-        <div className="fixed inset-0 bg-noise pointer-events-none" />
-        <div className="card-static relative z-10 w-full max-w-[420px] p-8 text-center anim-scale">
-          <div className="text-3xl mb-3">⏸️</div>
-          <h1 className="text-xl font-bold text-white">This review page is currently inactive.</h1>
-          <p className="mt-2 text-sm text-[var(--text-secondary)]">Please contact the shop owner.</p>
+      <main className="flex min-h-screen items-center justify-center bg-[#FAFAFA] px-5 font-sans">
+        <div className="bg-white border border-slate-200 rounded-[2rem] relative z-10 w-full max-w-[420px] p-8 text-center shadow-sm anim-scale">
+          <div className="text-4xl mb-4">⏸️</div>
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight">Temporarily Inactive</h1>
+          <p className="mt-2 text-sm font-medium text-slate-500">This review page is currently paused. Please contact the shop owner.</p>
         </div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[var(--bg-primary)] px-5 py-8">
-      <div className="fixed inset-0 bg-noise pointer-events-none" />
-      <div className="relative z-10 mx-auto w-full max-w-[420px]">
+    <main className="min-h-screen bg-[#FAFAFA] px-5 py-12 font-sans flex items-center justify-center">
+      <div className="relative z-10 w-full max-w-[420px] flex flex-col h-full">
         <ReviewForm
           shopId={shop.id}
           shopName={shop.name}
@@ -36,6 +34,11 @@ export default async function PublicReviewPage({ params }: RouteContext) {
           niche={shop.niche}
           googleReviewUrl={shop.googleReviewUrl}
         />
+
+        <a href="/" target="_blank" className="mt-12 mb-4 block text-center opacity-60 hover:opacity-100 transition-opacity">
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Powered by</p>
+          <p className="text-xl font-black text-slate-900 tracking-tight">Review<span className="text-orange-500">QR</span></p>
+        </a>
       </div>
     </main>
   );

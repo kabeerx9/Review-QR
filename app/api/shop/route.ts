@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const { name, city, niche, googleReviewUrl, googleMapsUrl } = await req.json();
+  const { name, city, niche, googleReviewUrl, googleMapsUrl, customNiche } = await req.json();
   if (!name || !city || !niche) {
     return NextResponse.json({ error: "invalid_input" }, { status: 400 });
   }
@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
       name,
       city,
       niche,
+      specialties: niche === "OTHER" && customNiche ? customNiche : null,
       googleReviewUrl: googleReviewUrl || "",
       googleMapsUrl: googleMapsUrl || "",
       slug,

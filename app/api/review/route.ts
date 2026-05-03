@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
 
     const [rating1, rating2, rating3, rating4] = ratings.map((r: unknown) => Number(r));
     const invalid = [rating1, rating2, rating3, rating4].some(
-      (r) => !Number.isFinite(r) || r < 1 || r > 5 || r !== Math.floor(r),
+      (r) => !Number.isFinite(r) || r < 0 || r > 5 || r !== Math.floor(r),
     );
     if (invalid) {
       return NextResponse.json({ error: "invalid_ratings" }, { status: 400 });
@@ -40,7 +40,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "shop_inactive" }, { status: 403 });
     }
 
-    const averageRating = (rating1 + rating2 + rating3 + rating4) / 4;
+    const activeRatings = ratingTuple.filter(r => r > 0);
+    const averageRating = activeRatings.length > 0 
+      ? activeRatings.reduce((a, b) => a + b, 0) / activeRatings.length 
+      : 0;
     const isPublic = averageRating >= 3;
 
     if (!isPublic) {
@@ -113,27 +116,6 @@ export async function POST(req: NextRequest) {
     } catch (e) {
       console.error("[review] groq failed, using fallback", e);
       generatedReview = fallbackReview(shop.name, shop.city);
-    }
-
-    if (!regenerate) {
-      try {
-        await prisma.review.create({
-          data: {
-            shopId,
-            rating1,
-            rating2,
-            rating3,
-            rating4,
-            averageRating,
-            isPublic: true,
-            customerPhone: customerPhone || null,
-            generatedReview,
-          },
-        });
-      } catch (e) {
-        console.error("[review] public create failed", e);
-        return NextResponse.json({ error: "save_failed" }, { status: 500 });
-      }
     }
 
     return NextResponse.json({

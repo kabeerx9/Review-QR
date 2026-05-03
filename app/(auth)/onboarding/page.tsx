@@ -12,6 +12,7 @@ export default function OnboardingPage() {
   const [name, setName] = useState("");
   const [city, setCity] = useState("");
   const [niche, setNiche] = useState("RESTAURANT");
+  const [customNiche, setCustomNiche] = useState("");
   const [googleReviewUrl, setGoogleReviewUrl] = useState("");
   const [googleMapsUrl, setGoogleMapsUrl] = useState("");
   const [error, setError] = useState("");
@@ -27,7 +28,7 @@ export default function OnboardingPage() {
     const response = await fetch("/api/shop", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, city, niche, googleReviewUrl, googleMapsUrl }),
+      body: JSON.stringify({ name, city, niche, googleReviewUrl, googleMapsUrl, customNiche }),
     });
 
     const data = await response.json();
@@ -80,6 +81,12 @@ export default function OnboardingPage() {
                   ))}
                 </select>
               </div>
+              {niche === "OTHER" && (
+                <div className="anim-fade">
+                  <label className="mb-1.5 block text-xs font-medium text-[#635d54]">Please specify your business type</label>
+                  <input type="text" required value={customNiche} onChange={(e) => setCustomNiche(e.target.value)} placeholder="e.g. Car Wash, Pet Grooming, Accounting" className="w-full rounded-xl border border-[#e9dfce] bg-[#fffcf7] px-4 py-3 text-sm text-[#22211c] placeholder:text-[#9a8f80] outline-none transition focus:border-orange-300 focus:ring-4 focus:ring-orange-100" />
+                </div>
+              )}
               <button type="button" onClick={() => setStep(2)} className="btn-main w-full py-3">
                 Continue →
               </button>

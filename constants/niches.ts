@@ -6,6 +6,7 @@ export const NICHE_CATEGORIES: Record<string, [string, string, string, string]> 
   RETAIL: ["Product Quality", "Staff Behaviour", "Cleanliness", "Value for Money"],
   CLINIC: ["Doctor Behaviour", "Cleanliness", "Wait Time", "Staff"],
   COACHING: ["Teaching Quality", "Study Material", "Cleanliness", "Value for Money"],
+  OTHER: ["Service", "Quality", "Experience", "Value for Money"],
 };
 
 export const NICHE_LABELS: Record<string, string> = {
@@ -16,4 +17,5 @@ export const NICHE_LABELS: Record<string, string> = {
   RETAIL: "Retail Shop / Showroom",
   CLINIC: "Clinic / Medical",
   COACHING: "Coaching / Classes",
+  OTHER: "Other (Please Specify)",
 };

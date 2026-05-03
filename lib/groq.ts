@@ -22,7 +22,7 @@ async function runGroqPrompt(prompt: string, temperature = 0.85): Promise<string
     throw new Error("missing_groq_api_key");
   }
 
-  const model = process.env.GROQ_MODEL?.trim() || "llama3-70b-8192";
+  const model = process.env.GROQ_MODEL?.trim() || "llama-3.3-70b-versatile";
   const res = await fetch(GROQ_CHAT_URL, {
     method: "POST",
     headers: {
@@ -34,7 +34,9 @@ async function runGroqPrompt(prompt: string, temperature = 0.85): Promise<string
       messages: [{ role: "user", content: prompt }],
       temperature,
       max_tokens: 512,
+      seed: Math.floor(Math.random() * 1000000),
     }),
+    cache: "no-store",
   });
 
   const raw = await res.text();
@@ -59,9 +61,9 @@ async function runGroqPrompt(prompt: string, temperature = 0.85): Promise<string
 
 export async function generateHinglishReview(input: ReviewInput): Promise<string> {
   const REVIEW_LENGTHS = [
-    "Short and punchy (1-2 sentences). Just the core highlight.",
-    "Medium (3-4 sentences). Balanced with a bit of detail.",
-    "Detailed (4-6 sentences). Elaborate on the experience."
+    "Extremely short (1-2 very short sentences max). Get straight to the point.",
+    "Short and punchy (2-3 sentences max). Just the core highlight.",
+    "Medium (3 sentences max). Balanced with a bit of detail."
   ];
 
   const REVIEW_TONES = [
@@ -79,7 +81,7 @@ export async function generateHinglishReview(input: ReviewInput): Promise<string
   ];
 
   const LANGUAGES = [
-    "Hinglish (mixed Hindi and English, like real WhatsApp text/Google review). Use some common Hindi words naturally (e.g., bhai, yaar, ekdum, mast, sahi).",
+    "Hinglish (mix of Hindi and English). Keep it completely natural. Use words like 'ekdum', 'mast', 'sahi', 'zabardast' naturally. DO NOT start every sentence with 'Bhai' or 'Yaar', do not overdo the slang.",
     "Pure English. Natural, conversational, and fluent.",
     "English with a very slight local Indian flavor (using terms like 'proper', 'nice ambience')."
   ];
@@ -112,12 +114,14 @@ Context:
 - Shop Name: ${input.shopName}
 - City: ${input.city}
 - Business Type: ${nicheLabel}${specialtiesText}
-- What you liked: ${ratingsText}
+- Key Highlights: ${ratingsText}
 
 Instructions for uniqueness & SEO (WITHOUT spamming):
+- MUST DO: Explicitly highlight and praise the specific things I liked: ${positiveRatings.join(", ")}. Do not ignore this.
 - Language: ${languageInstruction}
 - Tone: ${toneInstruction}
 - Length: ${lengthInstruction}
+- MAXIMUM length: strictly under 4 sentences. Keep it highly concise.
 - SEO: Naturally mention the shop name once and the city name if it makes sense. Do NOT sound like an advertisement. Use a relevant keyword naturally based on the Business Type. ${input.specialties ? `Crucially, try to naturally weave in one of these specialties into your review: "${input.specialties}".` : ""}
 - Start abruptly or naturally, do NOT start with "I visited", "Great experience", or "Highly recommended" every time. Vary the opening.
 - Make it sound like a unique, personal experience.
