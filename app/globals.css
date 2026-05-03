@@ -358,6 +358,24 @@ select.field option {
   }
 }
 
+@keyframes scroll-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-50% - 0.5rem));
+  }
+}
+
+.animate-scroll-x {
+  animation: scroll-x 30s linear infinite;
+  will-change: transform;
+}
+
+.animate-scroll-x:hover {
+  animation-play-state: paused;
+}
+
 .anim-fade {
   animation: fade-in 0.6s ease forwards;
 }

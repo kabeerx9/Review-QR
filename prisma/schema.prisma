@@ -65,6 +65,7 @@ model Shop {
   name                 String
   city                 String
   niche                Niche
+  specialties          String?
   googleMapsUrl        String    @default("")
   googleReviewUrl      String    @default("")
   googlePlaceId        String?   @unique

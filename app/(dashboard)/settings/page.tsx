@@ -12,9 +12,11 @@ export default async function SettingsPage() {
 
   const owner = await prisma.owner.findUnique({
     where: { id: session.ownerId },
+    include: { shops: true },
   });
 
   if (!owner) redirect("/login");
+  const shop = owner.shops[0];
 
   return (
     <main className="min-h-screen bg-[#FAFAFA] font-sans">
@@ -53,7 +55,7 @@ export default async function SettingsPage() {
             email: owner.email,
             phone: owner.phone,
             autoReplyEnabled: owner.autoReplyEnabled
-          }} />
+          }} shop={shop ? { id: shop.id, specialties: shop.specialties || "" } : null} />
         </div>
       </div>
     </main>

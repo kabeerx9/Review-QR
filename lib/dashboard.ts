@@ -38,6 +38,13 @@ interface NegativeReview {
   createdAt: string;
 }
 
+interface PublicReview {
+  id: string;
+  averageRating: number;
+  generatedReview: string | null;
+  createdAt: string;
+}
+
 interface SubscriptionSnapshot {
   status: SubscriptionStatus;
   plan: Plan | null;
@@ -49,6 +56,7 @@ export interface DashboardData {
   shop: DashboardShop | null;
   metrics: DashboardMetrics;
   recentNegativeReviews: NegativeReview[];
+  recentPositiveReviews: PublicReview[];
   subscription: SubscriptionSnapshot;
   ownerName: string;
   googleConnected: boolean;
@@ -118,6 +126,7 @@ export async function getDashboardData(ownerId: string): Promise<DashboardData> 
       shop: null,
       subscription,
       recentNegativeReviews: [],
+      recentPositiveReviews: [],
       googleConnected,
       autoReplyEnabled,
       metrics: {
@@ -134,7 +143,7 @@ export async function getDashboardData(ownerId: string): Promise<DashboardData> 
   const start30d = new Date(now);
   start30d.setDate(now.getDate() - 30);
 
-  const [monthlyReviews, trendReviews, recentNegativeReviews] = await Promise.all([
+  const [monthlyReviews, trendReviews, recentNegativeReviews, recentPositiveReviews] = await Promise.all([
     prisma.review.findMany({
       where: { shopId: shop.id, createdAt: { gte: startOfMonth } },
       select: { averageRating: true, isPublic: true },
@@ -156,6 +165,17 @@ export async function getDashboardData(ownerId: string): Promise<DashboardData> 
         rating4: true,
         averageRating: true,
         customerPhone: true,
+        createdAt: true,
+      },
+    }),
+    prisma.review.findMany({
+      where: { shopId: shop.id, isPublic: true, generatedReview: { not: null } },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+      select: {
+        id: true,
+        averageRating: true,
+        generatedReview: true,
         createdAt: true,
       },
     }),
@@ -214,6 +234,12 @@ export async function getDashboardData(ownerId: string): Promise<DashboardData> 
       rating4: review.rating4,
       averageRating: review.averageRating,
       customerPhone: review.customerPhone,
+      createdAt: review.createdAt.toISOString(),
+    })),
+    recentPositiveReviews: recentPositiveReviews.map((review) => ({
+      id: review.id,
+      averageRating: review.averageRating,
+      generatedReview: review.generatedReview,
       createdAt: review.createdAt.toISOString(),
     })),
   };

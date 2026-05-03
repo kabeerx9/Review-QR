@@ -283,6 +283,53 @@ export default async function DashboardPage() {
                 )}
               </section>
             </div>
+
+            {/* Recent Positive / Generated Reviews */}
+            <section className="bg-white border border-slate-200 rounded-4xl p-8 shadow-sm flex flex-col">
+              <div className="flex items-center justify-between mb-8">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">AI Generated Reviews</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase">Last 10 public reviews</p>
+              </div>
+
+              {data.recentPositiveReviews.length === 0 ? (
+                <div className="text-center py-12 flex-1 flex flex-col justify-center items-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-2xl mb-4 shadow-sm">
+                    ✨
+                  </div>
+                  <h3 className="text-slate-900 font-bold mb-1">No generated reviews yet</h3>
+                  <p className="text-sm font-medium text-slate-500 max-w-xs">
+                    When customers leave high ratings, the AI-generated reviews will appear here.
+                  </p>
+                </div>
+              ) : (
+                <div className="relative w-full overflow-hidden flex items-center py-4">
+                  <div className="flex gap-4 animate-scroll-x w-max">
+                    {[...data.recentPositiveReviews, ...data.recentPositiveReviews].map((review, idx) => (
+                      <div key={`${review.id}-${idx}`} className="w-[320px] shrink-0 rounded-2xl border border-blue-100 bg-blue-50/30 p-5 flex flex-col hover:border-blue-300 hover:shadow-md transition-all cursor-default">
+                        <div className="mb-4 flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="h-10 w-10 rounded-xl border border-blue-100 bg-white text-blue-500 shadow-sm flex items-center justify-center text-sm font-black">
+                              {review.averageRating.toFixed(1)}
+                            </div>
+                            <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                              {new Date(review.createdAt).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <span className="rounded-lg border border-blue-200 bg-blue-100/50 px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-blue-700">
+                            Generated
+                          </span>
+                        </div>
+                        <p className="text-sm text-slate-600 leading-relaxed italic flex-1 line-clamp-4">&ldquo;{review.generatedReview}&rdquo;</p>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Fading Edges */}
+                  <div className="absolute top-0 bottom-0 left-0 w-24 bg-gradient-to-r from-white to-transparent pointer-events-none" />
+                  <div className="absolute top-0 bottom-0 right-0 w-24 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+                </div>
+              )}
+            </section>
           </>
         )}
       </div>

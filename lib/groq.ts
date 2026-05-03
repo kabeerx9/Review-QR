@@ -6,6 +6,7 @@ export interface ReviewInput {
   shopName: string;
   city: string;
   niche: string;
+  specialties?: string | null;
   categories: [string, string, string, string];
   ratings: [number, number, number, number];
 }
@@ -21,7 +22,7 @@ async function runGroqPrompt(prompt: string, temperature = 0.85): Promise<string
     throw new Error("missing_groq_api_key");
   }
 
-  const model = process.env.GROQ_MODEL?.trim() || "openai/gpt-oss-120b";
+  const model = process.env.GROQ_MODEL?.trim() || "llama3-70b-8192";
   const res = await fetch(GROQ_CHAT_URL, {
     method: "POST",
     headers: {
@@ -57,36 +58,75 @@ async function runGroqPrompt(prompt: string, temperature = 0.85): Promise<string
 }
 
 export async function generateHinglishReview(input: ReviewInput): Promise<string> {
-  const variant = Math.floor(Math.random() * 4) + 1;
-  const ratingsText = input.categories
-    .map((cat, i) => `- ${cat}: ${input.ratings[i]}/5`)
-    .join("\n");
+  const REVIEW_LENGTHS = [
+    "Short and punchy (1-2 sentences). Just the core highlight.",
+    "Medium (3-4 sentences). Balanced with a bit of detail.",
+    "Detailed (4-6 sentences). Elaborate on the experience."
+  ];
+
+  const REVIEW_TONES = [
+    "Casual, friendly, highly colloquial Hinglish.",
+    "Slightly formal but appreciative, polite.",
+    "Very enthusiastic and energetic, like recommending to a best friend.",
+    "Direct, practical, no-nonsense review."
+  ];
+
+  const REVIEWER_PERSONAS = [
+    "A local resident who just stopped by.",
+    "Someone who came with their family/friends.",
+    "A first-time visitor trying it out.",
+    "Someone in a rush who appreciated the quick service."
+  ];
+
+  const LANGUAGES = [
+    "Hinglish (mixed Hindi and English, like real WhatsApp text/Google review). Use some common Hindi words naturally (e.g., bhai, yaar, ekdum, mast, sahi).",
+    "Pure English. Natural, conversational, and fluent.",
+    "English with a very slight local Indian flavor (using terms like 'proper', 'nice ambience')."
+  ];
+
+  const languageInstruction = LANGUAGES[Math.floor(Math.random() * LANGUAGES.length)];
+  const lengthInstruction = REVIEW_LENGTHS[Math.floor(Math.random() * REVIEW_LENGTHS.length)];
+  const toneInstruction = REVIEW_TONES[Math.floor(Math.random() * REVIEW_TONES.length)];
+  const personaInstruction = REVIEWER_PERSONAS[Math.floor(Math.random() * REVIEWER_PERSONAS.length)];
+  
+  // Dynamic temperature between 0.6 and 0.9 for variation
+  const temperature = 0.6 + Math.random() * 0.3;
 
   const nicheLabel = NICHE_LABELS[input.niche] ?? input.niche;
+  const specialtiesText = input.specialties ? `\n- Specializes in: ${input.specialties}` : "";
 
-  const prompt = `You are a real Indian customer writing a genuine Google review in Hinglish (mixed Hindi and English, casual, like how Indians actually text each other).
+  // Filter to only include things they rated 4 or 5
+  const positiveRatings = input.categories
+    .map((cat, i) => ({ category: cat, rating: input.ratings[i] }))
+    .filter(r => r.rating >= 4)
+    .map(r => r.category);
 
-Shop Details:
-- Name: ${input.shopName}
+  const ratingsText = positiveRatings.length > 0 
+    ? `Specific things I liked: ${positiveRatings.join(", ")}` 
+    : "Overall experience was decent.";
+
+  const prompt = `You are a real Indian customer writing a genuine Google review.
+DO NOT ACT LIKE AN AI. Act like a human (${personaInstruction}).
+
+Context:
+- Shop Name: ${input.shopName}
 - City: ${input.city}
-- Type: ${nicheLabel}
+- Business Type: ${nicheLabel}${specialtiesText}
+- What you liked: ${ratingsText}
 
-My Ratings:
-${ratingsText}
+Instructions for uniqueness & SEO (WITHOUT spamming):
+- Language: ${languageInstruction}
+- Tone: ${toneInstruction}
+- Length: ${lengthInstruction}
+- SEO: Naturally mention the shop name once and the city name if it makes sense. Do NOT sound like an advertisement. Use a relevant keyword naturally based on the Business Type. ${input.specialties ? `Crucially, try to naturally weave in one of these specialties into your review: "${input.specialties}".` : ""}
+- Start abruptly or naturally, do NOT start with "I visited", "Great experience", or "Highly recommended" every time. Vary the opening.
+- Make it sound like a unique, personal experience.
+- DO NOT use hashtags.
+- Use 0 to 2 emojis.
+- Do NOT use robotic/marketing phrases ("This establishment", "Top-notch", "Aesthetically pleasing", "Delightful").
 
-Write a natural Hinglish review following these rules:
-- 100-150 words exactly
-- Sound like a genuine customer, NOT corporate or formal
-- Use 1-2 emojis max
-- This is structure variant #${variant} — vary the opening and flow
-- Highlight things rated 4 or 5 specifically
-- Do NOT mention or hint at anything rated below 4
-- End with a recommendation
-- Do NOT use hashtags
-- Do NOT start with "I visited" — vary the opening
+Output ONLY the review text. No quotes, no preamble, no markdown.`;
 
-Output ONLY the review text. No quotes, no explanation, no preamble.`;
-
-  return runGroqPrompt(prompt, 0.85);
+  return runGroqPrompt(prompt, temperature);
 }
 

@@ -11,7 +11,7 @@ function fallbackReview(shopName: string, city: string): string {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { shopId, ratings, customerPhone } = body;
+    const { shopId, ratings, customerPhone, regenerate } = body;
 
     if (!shopId || !Array.isArray(ratings) || ratings.length !== 4) {
       return NextResponse.json({ error: "invalid_input" }, { status: 400 });
@@ -44,23 +44,25 @@ export async function POST(req: NextRequest) {
     const isPublic = averageRating >= 3;
 
     if (!isPublic) {
-      try {
-        await prisma.review.create({
-          data: {
-            shopId,
-            rating1,
-            rating2,
-            rating3,
-            rating4,
-            averageRating,
-            isPublic: false,
-            customerPhone: customerPhone || null,
-            generatedReview: null,
-          },
-        });
-      } catch (e) {
-        console.error("[review] private create failed", e);
-        return NextResponse.json({ error: "save_failed" }, { status: 500 });
+      if (!regenerate) {
+        try {
+          await prisma.review.create({
+            data: {
+              shopId,
+              rating1,
+              rating2,
+              rating3,
+              rating4,
+              averageRating,
+              isPublic: false,
+              customerPhone: customerPhone || null,
+              generatedReview: null,
+            },
+          });
+        } catch (e) {
+          console.error("[review] private create failed", e);
+          return NextResponse.json({ error: "save_failed" }, { status: 500 });
+        }
       }
 
       const rawAlert =
@@ -104,6 +106,7 @@ export async function POST(req: NextRequest) {
         shopName: shop.name,
         city: shop.city,
         niche: shop.niche,
+        specialties: shop.specialties,
         categories,
         ratings: ratingTuple,
       });
@@ -112,23 +115,25 @@ export async function POST(req: NextRequest) {
       generatedReview = fallbackReview(shop.name, shop.city);
     }
 
-    try {
-      await prisma.review.create({
-        data: {
-          shopId,
-          rating1,
-          rating2,
-          rating3,
-          rating4,
-          averageRating,
-          isPublic: true,
-          customerPhone: customerPhone || null,
-          generatedReview,
-        },
-      });
-    } catch (e) {
-      console.error("[review] public create failed", e);
-      return NextResponse.json({ error: "save_failed" }, { status: 500 });
+    if (!regenerate) {
+      try {
+        await prisma.review.create({
+          data: {
+            shopId,
+            rating1,
+            rating2,
+            rating3,
+            rating4,
+            averageRating,
+            isPublic: true,
+            customerPhone: customerPhone || null,
+            generatedReview,
+          },
+        });
+      } catch (e) {
+        console.error("[review] public create failed", e);
+        return NextResponse.json({ error: "save_failed" }, { status: 500 });
+      }
     }
 
     return NextResponse.json({

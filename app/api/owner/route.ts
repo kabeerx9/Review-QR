@@ -10,7 +10,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { name, email, phone, autoReplyEnabled } = body;
+    const { name, email, phone, autoReplyEnabled, shopId, specialties } = body;
 
     // Optional: Validate inputs here
     if (!name || typeof name !== "string") {
@@ -27,6 +27,13 @@ export async function PATCH(req: NextRequest) {
         autoReplyEnabled: Boolean(autoReplyEnabled),
       },
     });
+
+    if (shopId && typeof specialties === "string") {
+      await prisma.shop.update({
+        where: { id: shopId, ownerId: session.ownerId },
+        data: { specialties },
+      });
+    }
 
     return NextResponse.json({ success: true, owner: updatedOwner });
   } catch (error) {

@@ -10,14 +10,19 @@ interface SettingsFormProps {
     phone: string | null;
     autoReplyEnabled: boolean;
   };
+  shop: {
+    id: string;
+    specialties: string;
+  } | null;
 }
 
-export default function SettingsForm({ owner }: SettingsFormProps) {
+export default function SettingsForm({ owner, shop }: SettingsFormProps) {
   const router = useRouter();
   const [name, setName] = useState(owner.name || "");
   const [email, setEmail] = useState(owner.email || "");
   const [phone, setPhone] = useState(owner.phone || "");
   const [autoReplyEnabled, setAutoReplyEnabled] = useState(owner.autoReplyEnabled);
+  const [specialties, setSpecialties] = useState(shop?.specialties || "");
   
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
@@ -28,10 +33,16 @@ export default function SettingsForm({ owner }: SettingsFormProps) {
     setMessage({ type: "", text: "" });
 
     try {
+      const payload: any = { name, email, phone, autoReplyEnabled };
+      if (shop) {
+        payload.shopId = shop.id;
+        payload.specialties = specialties;
+      }
+
       const res = await fetch("/api/owner", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, phone, autoReplyEnabled }),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
@@ -82,6 +93,20 @@ export default function SettingsForm({ owner }: SettingsFormProps) {
           />
         </div>
       </div>
+
+      {shop && (
+        <div className="py-6 border-t border-slate-100">
+          <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Shop Specialties / Keywords</label>
+          <input 
+            type="text" 
+            value={specialties} 
+            onChange={(e) => setSpecialties(e.target.value)} 
+            placeholder="e.g. Cold Coffee, Keratin Treatment, Best Biryani"
+            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all font-medium text-slate-900"
+          />
+          <p className="text-xs text-slate-500 mt-2 font-medium">These will be naturally injected into AI-generated reviews for better SEO.</p>
+        </div>
+      )}
 
       <div className="py-6 border-y border-slate-100">
         <div className="flex items-center justify-between p-5 bg-slate-50 rounded-2xl border border-slate-100 cursor-pointer" onClick={() => setAutoReplyEnabled(!autoReplyEnabled)}>
