@@ -55,7 +55,7 @@ export default async function SettingsPage() {
             email: owner.email,
             phone: owner.phone,
             autoReplyEnabled: owner.autoReplyEnabled
-          }} shop={shop ? { id: shop.id, specialties: shop.specialties || "" } : null} />
+          }} shop={shop ? { id: shop.id, specialties: (shop as any).specialties || "" } : null} />
         </div>
       </div>
     </main>

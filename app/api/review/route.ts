@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
         shopName: shop.name,
         city: shop.city,
         niche: shop.niche,
-        specialties: shop.specialties,
+        specialties: (shop as any).specialties,
         categories,
         ratings: ratingTuple,
       });
