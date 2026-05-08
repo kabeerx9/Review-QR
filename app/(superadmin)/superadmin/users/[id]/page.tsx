@@ -62,6 +62,11 @@ export default function UserDetailPage({ params }: PageProps) {
   const [loading, setLoading] = useState(true);
   const [editingNotes, setEditingNotes] = useState(false);
   const [notesValue, setNotesValue] = useState("");
+  const [editingSpecialty, setEditingSpecialty] = useState(false);
+  const [specialtyValue, setSpecialtyValue] = useState("");
+  const [specialtyShopId, setSpecialtyShopId] = useState<string | null>(null);
+  const [savingSpecialty, setSavingSpecialty] = useState(false);
+  const [specialtySaved, setSpecialtySaved] = useState(false);
 
   useEffect(() => {
     fetchUser();
@@ -94,6 +99,40 @@ export default function UserDetailPage({ params }: PageProps) {
       fetchUser();
     } catch (error) {
       console.error("Failed to save notes:", error);
+    }
+  }
+
+  async function handleSaveSpecialty() {
+    if (!specialtyShopId) return;
+    setSavingSpecialty(true);
+    try {
+      const res = await fetch(`/api/superadmin/shops/${specialtyShopId}/specialty`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ specialties: specialtyValue }),
+      });
+      if (res.ok) {
+        setSpecialtySaved(true);
+        setTimeout(() => {
+          setEditingSpecialty(false);
+          setSpecialtyShopId(null);
+          setSpecialtySaved(false);
+          if (user) {
+            setUser({
+              ...user,
+              shops: user.shops.map(shop =>
+                shop.id === specialtyShopId
+                  ? { ...shop, specialties: specialtyValue || null }
+                  : shop
+              )
+            });
+          }
+        }, 800);
+      }
+    } catch (error) {
+      console.error("Failed to save specialty:", error);
+    } finally {
+      setSavingSpecialty(false);
     }
   }
 
@@ -378,12 +417,67 @@ export default function UserDetailPage({ params }: PageProps) {
                     <span className="text-slate-500">Slug:</span>
                     <span className="text-slate-900 ml-1">{shop.slug}</span>
                   </div>
-                  {shop.specialties && (
-                    <div>
-                      <span className="text-slate-500">Specialties:</span>
-                      <span className="text-slate-900 ml-1">{shop.specialties}</span>
-                    </div>
-                  )}
+                  <div className="col-span-2">
+                    <span className="text-slate-500">Specialty:</span>
+                    {editingSpecialty && specialtyShopId === shop.id ? (
+                      <div className="mt-2">
+                        {savingSpecialty ? (
+                          <div className="flex items-center gap-2 text-sm text-slate-600">
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-slate-600"></div>
+                            Saving...
+                          </div>
+                        ) : specialtySaved ? (
+                          <div className="flex items-center gap-2 text-sm text-green-600">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            Saved!
+                          </div>
+                        ) : (
+                          <>
+                            <input
+                              type="text"
+                              value={specialtyValue}
+                              onChange={(e) => setSpecialtyValue(e.target.value)}
+                              className="border border-slate-300 rounded px-3 py-2 text-sm w-full text-slate-900 bg-white"
+                              placeholder="Enter specialty"
+                            />
+                            <div className="flex gap-2 mt-2">
+                              <button
+                                onClick={handleSaveSpecialty}
+                                className="text-sm bg-green-500 text-white px-3 py-1.5 rounded hover:bg-green-600"
+                              >
+                                Save
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setEditingSpecialty(false);
+                                  setSpecialtyShopId(null);
+                                }}
+                                className="text-sm bg-slate-300 text-slate-700 px-3 py-1.5 rounded hover:bg-slate-400"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="flex items-center">
+                        <span className="text-slate-900 ml-1">{shop.specialties || "-"}</span>
+                        <button
+                          onClick={() => {
+                            setEditingSpecialty(true);
+                            setSpecialtyValue(shop.specialties || "");
+                            setSpecialtyShopId(shop.id);
+                          }}
+                          className="text-xs text-orange-600 hover:text-orange-800 ml-2"
+                        >
+                          Edit
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="space-y-2 mb-3">
                   {shop.googleReviewUrl && (

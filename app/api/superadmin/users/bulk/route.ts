@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
       await prisma.superAdminAuditLog.create({
         data: {
           actorId: superadmin.id,
-          action: "USERS_BULK_CREATED",
+          action: "USER_CREATED",
           metadata: { count: created.length },
         },
       });
