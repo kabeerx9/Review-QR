@@ -49,7 +49,7 @@ export default function ROICalculator() {
               <span className="text-xl font-black tracking-tight text-slate-900 hidden sm:block">ReviewQR</span>
             </Link>
           </div>
-          <Link href="/signup" className="text-sm font-bold text-orange-600 hover:text-orange-700">Get Pro Version →</Link>
+          <Link href="/login" className="text-sm font-bold text-orange-600 hover:text-orange-700">Get Pro Version →</Link>
         </div>
       </nav>
 
@@ -125,7 +125,7 @@ export default function ROICalculator() {
                 </div>
 
                 <div className="pt-4 border-t border-slate-100">
-                  <Link href="/signup" className="flex w-full items-center justify-center gap-2 bg-orange-500 text-white py-4 rounded-2xl font-black hover:bg-orange-600 transition-colors">
+                  <Link href="/login" className="flex w-full items-center justify-center gap-2 bg-orange-500 text-white py-4 rounded-2xl font-black hover:bg-orange-600 transition-colors">
                     Stop Losing Revenue — Start Free Trial
                   </Link>
                 </div>

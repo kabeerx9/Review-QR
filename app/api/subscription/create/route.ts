@@ -1,4 +1,4 @@
-import { getSession } from "@/lib/auth";
+import { requireActiveUserFromRequest } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import razorpay from "@/lib/razorpay";
 import { NextRequest, NextResponse } from "next/server";
@@ -9,8 +9,8 @@ import { NextRequest, NextResponse } from "next/server";
  * Body: { planId: string }
  */
 export async function POST(req: NextRequest) {
-  const session = await getSession();
-  if (!session) {
+  const owner = await requireActiveUserFromRequest(req);
+  if (!owner) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
@@ -22,14 +22,6 @@ export async function POST(req: NextRequest) {
       { error: "planId is required" },
       { status: 400 }
     );
-  }
-
-  const owner = await prisma.owner.findUnique({
-    where: { id: session.ownerId },
-  });
-
-  if (!owner) {
-    return NextResponse.json({ error: "owner_not_found" }, { status: 404 });
   }
 
   try {

@@ -1,12 +1,12 @@
-import { getSessionFromRequest } from "@/lib/auth";
+import { requireActiveUserFromRequest } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { generateQRDataURL } from "@/lib/qrcode";
 import { nanoid } from "nanoid";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const session = await getSessionFromRequest(req);
-  if (!session) {
+  const owner = await requireActiveUserFromRequest(req);
+  if (!owner) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
 
   const shop = await prisma.shop.create({
     data: {
-      ownerId: session.ownerId,
+      ownerId: owner.id,
       name,
       city,
       niche,

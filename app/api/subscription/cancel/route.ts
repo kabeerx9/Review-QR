@@ -1,23 +1,19 @@
-import { getSession } from "@/lib/auth";
+import { requireActiveUserFromRequest } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import razorpay from "@/lib/razorpay";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 /**
  * POST /api/subscription/cancel
  * Cancels the authenticated owner's active Razorpay subscription.
  */
-export async function POST() {
-  const session = await getSession();
-  if (!session) {
+export async function POST(req: NextRequest) {
+  const owner = await requireActiveUserFromRequest(req);
+  if (!owner) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const owner = await prisma.owner.findUnique({
-    where: { id: session.ownerId },
-  });
-
-  if (!owner || !owner.razorpaySubscriptionId) {
+  if (!owner.razorpaySubscriptionId) {
     return NextResponse.json(
       { error: "no_active_subscription" },
       { status: 400 }

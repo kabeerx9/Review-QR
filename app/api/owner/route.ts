@@ -1,11 +1,11 @@
-import { getSession } from "@/lib/auth";
+import { requireActiveUserFromRequest } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(req: NextRequest) {
   try {
-    const session = await getSession();
-    if (!session) {
+    const owner = await requireActiveUserFromRequest(req);
+    if (!owner) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -19,7 +19,7 @@ export async function PATCH(req: NextRequest) {
 
     // Update the owner record
     const updatedOwner = await prisma.owner.update({
-      where: { id: session.ownerId },
+      where: { id: owner.id },
       data: {
         name,
         email: email || null,
@@ -30,7 +30,7 @@ export async function PATCH(req: NextRequest) {
 
     if (shopId && typeof specialties === "string") {
       await prisma.shop.update({
-        where: { id: shopId, ownerId: session.ownerId },
+        where: { id: shopId, ownerId: owner.id },
         data: { specialties } as any,
       });
     }

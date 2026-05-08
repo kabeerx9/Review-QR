@@ -1,20 +1,20 @@
-import { getSession } from "@/lib/auth";
+import { requireActiveUserFromRequest } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { getAccounts, getLocations } from "@/lib/google-business";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 /**
  * GET /api/google-business/accounts
  * Fetches the owner's Google Business accounts and their locations.
  */
-export async function GET() {
-  const session = await getSession();
-  if (!session) {
+export async function GET(req: NextRequest) {
+  const owner = await requireActiveUserFromRequest(req);
+  if (!owner) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const owner = await prisma.owner.findUnique({
-    where: { id: session.ownerId },
+  const ownerWithTokens = await prisma.owner.findUnique({
+    where: { id: owner.id },
     select: {
       id: true,
       googleAccessToken: true,
@@ -22,7 +22,7 @@ export async function GET() {
     },
   });
 
-  if (!owner || !owner.googleAccessToken) {
+  if (!ownerWithTokens || !ownerWithTokens.googleAccessToken) {
     return NextResponse.json(
       { error: "google_not_connected" },
       { status: 400 }
@@ -31,14 +31,14 @@ export async function GET() {
 
   try {
     // Fetch accounts
-    const accountsRes = await getAccounts(owner);
+    const accountsRes = await getAccounts(ownerWithTokens);
     const accounts = accountsRes.accounts || [];
 
     // Fetch locations for each account
     const accountsWithLocations = await Promise.all(
       accounts.map(async (account) => {
         try {
-          const locationsRes = await getLocations(owner, account.name);
+          const locationsRes = await getLocations(ownerWithTokens, account.name);
           return {
             ...account,
             locations: locationsRes.locations || [],

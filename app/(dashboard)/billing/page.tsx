@@ -1,20 +1,12 @@
-import { getSession } from "@/lib/auth";
+import { requireOwner } from "@/lib/auth";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import UserMenu from "@/components/UserMenu";
 import BillingClient from "@/components/BillingClient";
 import prisma from "@/lib/prisma";
 import razorpay from "@/lib/razorpay";
 
 export default async function BillingPage() {
-  const session = await getSession();
-  if (!session) redirect("/login");
-
-  const owner = await prisma.owner.findUnique({
-    where: { id: session.ownerId },
-  });
-
-  if (!owner) redirect("/login");
+  const owner = await requireOwner();
 
   // Fetch plans from Razorpay
   let plans: {

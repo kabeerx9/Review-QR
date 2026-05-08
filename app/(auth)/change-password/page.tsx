@@ -4,10 +4,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
-export default function LoginPage() {
+export default function ChangePasswordPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const inputClassName =
@@ -28,20 +29,36 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
-    const response = await fetch("/api/auth/login", {
+    if (newPassword.length < 8) {
+      setError("New password must be at least 8 characters");
+      setLoading(false);
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
+
+    const response = await fetch("/api/auth/change-password", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ currentPassword, newPassword }),
     });
 
     const data = await safeJson(response);
     if (!response.ok) {
-      const apiError = typeof data.error === "string" ? data.error : "Login failed";
+      const apiError = typeof data.error === "string" ? data.error : "Change password failed";
       const message =
         apiError === "missing_jwt_secret"
           ? "Server config missing JWT_SECRET. Add it in .env.local and restart dev server."
-          : apiError === "account_disabled"
-          ? "Your account has been disabled. Contact support."
+          : apiError === "invalid_current_password"
+          ? "Current password is incorrect"
+          : apiError === "password_too_short"
+          ? "New password must be at least 8 characters"
+          : apiError === "same_password"
+          ? "New password must be different from current password"
           : apiError;
       setError(message);
       setLoading(false);
@@ -63,65 +80,71 @@ export default function LoginPage() {
             <span className="text-2xl font-bold text-[#22211c]">ReviewQR</span>
           </div>
           <h2 className="text-3xl font-bold leading-snug text-[#22211c]">
-            Turn happy customers into 5-star Google reviews
+            Change your password
           </h2>
           <p className="leading-relaxed text-[#635d54]">
-            200+ Indian shop owners trust ReviewQR to boost their online reputation automatically.
+            For your security, you must change your password before continuing to use the dashboard.
           </p>
-          <div className="flex items-center gap-3 text-sm text-[#81786b]">
-            <span className="flex items-center gap-1.5">
-              <svg className="h-4 w-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>
-              Free 15-day trial
-            </span>
-            <span className="flex items-center gap-1.5">
-              <svg className="h-4 w-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>
-              No credit card
-            </span>
-          </div>
         </div>
       </div>
 
-      {/* Right — Login Form */}
+      {/* Right — Change Password Form */}
       <div className="flex flex-1 items-center justify-center px-5 py-12">
         <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(247,148,29,0.10)_0%,transparent_60%)] lg:hidden" />
         <form onSubmit={onSubmit} className="relative z-10 w-full max-w-sm space-y-6 rounded-3xl border border-[#e5d9c4] bg-white p-6 shadow-[0_16px_36px_rgba(34,31,28,0.08)] anim-slide">
-          <div className="absolute -top-12 left-0 lg:-left-4">
-            <Link href="/" className="flex items-center gap-1 text-sm font-medium text-[#81786b] transition-colors hover:text-[#22211c]">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-              Back to Home
-            </Link>
-          </div>
-
           <div className="lg:hidden flex items-center gap-2 mb-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-linear-to-br from-orange-500 to-red-500 text-sm font-bold text-white">R</div>
             <span className="text-lg font-bold text-[#22211c]">ReviewQR</span>
           </div>
 
           <div>
-            <h1 className="text-2xl font-bold text-[#22211c]">Welcome back</h1>
-            <p className="mt-1 text-sm text-[#635d54]">Login to manage your shop reviews</p>
+            <h1 className="text-2xl font-bold text-[#22211c]">Change Password</h1>
+            <p className="mt-1 text-sm text-[#635d54]">Set a new password to continue</p>
           </div>
 
           <div className="space-y-4">
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-[#635d54]">Email</label>
-              <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className={inputClassName} />
+              <label className="mb-1.5 block text-xs font-medium text-[#635d54]">Current Password</label>
+              <input
+                type="password"
+                required
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                placeholder="••••••••"
+                className={inputClassName}
+              />
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-[#635d54]">Password</label>
-              <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className={inputClassName} />
+              <label className="mb-1.5 block text-xs font-medium text-[#635d54]">New Password</label>
+              <input
+                type="password"
+                required
+                minLength={8}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Min 8 characters"
+                className={inputClassName}
+              />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-xs font-medium text-[#635d54]">Confirm New Password</label>
+              <input
+                type="password"
+                required
+                minLength={8}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Min 8 characters"
+                className={inputClassName}
+              />
             </div>
           </div>
 
           {error && <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
 
           <button type="submit" disabled={loading} className="btn-main w-full py-3">
-            {loading ? "Logging in..." : "Login →"}
+            {loading ? "Changing password..." : "Change Password →"}
           </button>
-
-          <p className="text-center text-sm text-[#635d54]">
-            Need access? Contact ReviewQR support
-          </p>
         </form>
       </div>
     </main>

@@ -43,7 +43,7 @@ export default function FreeQRGenerator() {
               <span className="text-xl font-black tracking-tight text-slate-900 hidden sm:block">ReviewQR</span>
             </Link>
           </div>
-          <Link href="/signup" className="text-sm font-bold text-orange-600 hover:text-orange-700">Get Pro Version →</Link>
+          <Link href="/login" className="text-sm font-bold text-orange-600 hover:text-orange-700">Get Pro Version →</Link>
         </div>
       </nav>
 
@@ -118,7 +118,7 @@ export default function FreeQRGenerator() {
                 <div className="bg-orange-50 border border-orange-100 p-5 rounded-2xl text-left mt-4">
                   <h3 className="font-black text-orange-900 mb-1 text-sm">⚠️ This is a basic QR code</h3>
                   <p className="text-xs text-orange-800 mb-3 font-medium">It sends every customer to Google — including angry ones who might leave 1-stars. ReviewQR Pro intercepts unhappy customers privately first.</p>
-                  <Link href="/signup" className="text-xs font-black text-orange-600">Upgrade to Smart QR →</Link>
+                  <Link href="/login" className="text-xs font-black text-orange-600">Upgrade to Smart QR →</Link>
                 </div>
               </div>
             )}

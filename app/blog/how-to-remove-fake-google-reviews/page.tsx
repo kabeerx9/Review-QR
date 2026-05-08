@@ -19,7 +19,7 @@ export default function BlogPost1() {
               <span className="text-xl font-black tracking-tight text-slate-900 hidden sm:block">ReviewQR</span>
             </Link>
           </div>
-          <Link href="/signup" className="text-sm font-bold text-orange-600 hover:text-orange-700">Start Free Trial →</Link>
+          <Link href="/login" className="text-sm font-bold text-orange-600 hover:text-orange-700">Start Free Trial →</Link>
         </div>
       </nav>
 
@@ -75,7 +75,7 @@ export default function BlogPost1() {
           <div className="relative z-10">
             <h3 className="text-2xl font-black mb-3">Stop worrying about bad reviews.</h3>
             <p className="text-slate-400 font-medium mb-6">ReviewQR privately intercepts unhappy customers before they post publicly. You resolve the issue. They never post the 1-star.</p>
-            <Link href="/signup" className="inline-flex items-center gap-2 bg-orange-500 text-white px-8 py-3 rounded-full font-black hover:bg-orange-600 transition-colors">
+            <Link href="/login" className="inline-flex items-center gap-2 bg-orange-500 text-white px-8 py-3 rounded-full font-black hover:bg-orange-600 transition-colors">
               Start 15-Day Free Trial
             </Link>
           </div>

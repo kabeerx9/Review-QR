@@ -73,7 +73,7 @@ export default function ReviewReplyGenerator() {
               <span className="text-xl font-black tracking-tight text-slate-900 hidden sm:block">ReviewQR</span>
             </Link>
           </div>
-          <Link href="/signup" className="text-sm font-bold text-orange-600 hover:text-orange-700">Get Pro Version →</Link>
+          <Link href="/login" className="text-sm font-bold text-orange-600 hover:text-orange-700">Get Pro Version →</Link>
         </div>
       </nav>
 
@@ -135,7 +135,7 @@ export default function ReviewReplyGenerator() {
                 <div className="mt-6 bg-orange-50 border border-orange-100 p-5 rounded-2xl">
                   <h3 className="font-black text-orange-900 mb-1 text-sm">Tired of copy-pasting? 🤖</h3>
                   <p className="text-xs text-orange-800 mb-3 font-medium">ReviewQR Pro connects to your Google Business and auto-replies to every review, 24/7, in any language.</p>
-                  <Link href="/signup" className="text-xs font-black text-orange-600 hover:text-orange-700">Put replies on autopilot →</Link>
+                  <Link href="/login" className="text-xs font-black text-orange-600 hover:text-orange-700">Put replies on autopilot →</Link>
                 </div>
               </div>
             )}

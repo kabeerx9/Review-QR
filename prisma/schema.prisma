@@ -26,6 +26,11 @@ enum Plan {
   AGENCY
 }
 
+enum OwnerRole {
+  USER
+  SUPERADMIN
+}
+
 enum Niche {
   RESTAURANT
   SALON
@@ -35,6 +40,14 @@ enum Niche {
   CLINIC
   COACHING
   OTHER
+}
+
+enum SuperAdminAuditAction {
+  USER_CREATED
+  USERS_BULK_CREATED
+  USER_DISABLED
+  USER_ENABLED
+  USER_NOTES_UPDATED
 }
 
 model Owner {
@@ -54,9 +67,24 @@ model Owner {
   googleAccessToken      String?
   googleRefreshToken     String?
   autoReplyEnabled       Boolean            @default(true)
+  role                   OwnerRole          @default(USER)
+  mustChangePassword     Boolean            @default(false)
+  disabledAt             DateTime?
+  internalNotes          String             @default("")
+  onboardedById          String?
+  onboardedBy            Owner?             @relation("OwnerOnboardedBy", fields: [onboardedById], references: [id], onDelete: SetNull)
+  onboardedOwners        Owner[]            @relation("OwnerOnboardedBy")
+  lastLoginAt            DateTime?
   shops                  Shop[]
+  superAdminAuditActions SuperAdminAuditLog[] @relation("SuperAdminAuditActor")
+  superAdminAuditTargets SuperAdminAuditLog[] @relation("SuperAdminAuditTarget")
   createdAt              DateTime           @default(now())
   updatedAt              DateTime           @updatedAt
+
+  @@index([role])
+  @@index([subscriptionStatus])
+  @@index([disabledAt])
+  @@index([createdAt])
 }
 
 model Shop {
@@ -120,4 +148,20 @@ model OtpCode {
   createdAt DateTime @default(now())
 
   @@index([phone])
+}
+
+model SuperAdminAuditLog {
+  id          String                @id @default(cuid())
+  actor       Owner                 @relation("SuperAdminAuditActor", fields: [actorId], references: [id], onDelete: Cascade)
+  actorId     String
+  targetOwner Owner?                @relation("SuperAdminAuditTarget", fields: [targetOwnerId], references: [id], onDelete: SetNull)
+  targetOwnerId String?
+  action      SuperAdminAuditAction
+  metadata    Json?
+  createdAt   DateTime              @default(now())
+
+  @@index([actorId])
+  @@index([targetOwnerId])
+  @@index([action])
+  @@index([createdAt])
 }

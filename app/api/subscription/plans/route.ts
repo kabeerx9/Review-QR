@@ -1,14 +1,14 @@
-import { getSession } from "@/lib/auth";
+import { requireActiveUserFromRequest } from "@/lib/auth";
 import razorpay from "@/lib/razorpay";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 /**
  * GET /api/subscription/plans
  * Fetches all active subscription plans from Razorpay dynamically.
  */
-export async function GET() {
-  const session = await getSession();
-  if (!session) {
+export async function GET(req: NextRequest) {
+  const owner = await requireActiveUserFromRequest(req);
+  if (!owner) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 

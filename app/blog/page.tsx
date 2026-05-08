@@ -39,7 +39,7 @@ export default function BlogIndex() {
               <span className="text-xl font-black tracking-tight text-slate-900 hidden sm:block">ReviewQR</span>
             </Link>
           </div>
-          <Link href="/signup" className="text-sm font-bold text-orange-600 hover:text-orange-700">Start Free Trial →</Link>
+          <Link href="/login" className="text-sm font-bold text-orange-600 hover:text-orange-700">Start Free Trial →</Link>
         </div>
       </nav>
 

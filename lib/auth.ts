@@ -1,6 +1,8 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import { redirect } from "next/navigation";
+import prisma from "@/lib/prisma";
 
 function getSecret(): Uint8Array {
   const secret = process.env.JWT_SECRET;
@@ -13,6 +15,8 @@ function getSecret(): Uint8Array {
 export interface SessionPayload {
   ownerId: string;
   email: string;
+  role: "USER" | "SUPERADMIN";
+  mustChangePassword: boolean;
 }
 
 export async function createToken(payload: SessionPayload): Promise<string> {
@@ -55,4 +59,40 @@ export function setSessionCookie(res: NextResponse, token: string): void {
     maxAge: 60 * 60 * 24 * 30,
     path: "/",
   });
+}
+
+export async function getCurrentOwner() {
+  const session = await getSession();
+  if (!session) return null;
+  return prisma.owner.findUnique({ where: { id: session.ownerId } });
+}
+
+export async function requireOwner() {
+  const owner = await getCurrentOwner();
+  if (!owner || owner.disabledAt) redirect("/login");
+  if (owner.role === "SUPERADMIN") redirect("/superadmin");
+  if (owner.mustChangePassword) redirect("/change-password");
+  return owner;
+}
+
+export async function requireSuperAdmin() {
+  const owner = await getCurrentOwner();
+  if (!owner || owner.disabledAt || owner.role !== "SUPERADMIN") redirect("/dashboard");
+  return owner;
+}
+
+export async function requireSuperAdminFromRequest(req: NextRequest) {
+  const session = await getSessionFromRequest(req);
+  if (!session) return null;
+  const owner = await prisma.owner.findUnique({ where: { id: session.ownerId } });
+  if (!owner || owner.disabledAt || owner.role !== "SUPERADMIN") return null;
+  return owner;
+}
+
+export async function requireActiveUserFromRequest(req: NextRequest) {
+  const session = await getSessionFromRequest(req);
+  if (!session) return null;
+  const owner = await prisma.owner.findUnique({ where: { id: session.ownerId } });
+  if (!owner || owner.disabledAt || owner.role === "SUPERADMIN" || owner.mustChangePassword) return null;
+  return owner;
 }

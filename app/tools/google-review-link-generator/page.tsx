@@ -34,7 +34,7 @@ export default function GoogleReviewLinkGenerator() {
               <span className="text-xl font-black tracking-tight text-slate-900 hidden sm:block">ReviewQR</span>
             </Link>
           </div>
-          <Link href="/signup" className="text-sm font-bold text-orange-600 hover:text-orange-700">Get Pro Version →</Link>
+          <Link href="/login" className="text-sm font-bold text-orange-600 hover:text-orange-700">Get Pro Version →</Link>
         </div>
       </nav>
 
@@ -111,7 +111,7 @@ export default function GoogleReviewLinkGenerator() {
                 <div className="mt-auto bg-orange-50 border border-orange-100 p-5 rounded-2xl">
                   <h3 className="font-black text-orange-900 mb-1 text-sm">⚠️ Warning: This link has no protection</h3>
                   <p className="text-xs text-orange-800 mb-3 font-medium">Sharing this link directly means angry customers can also post 1-star reviews. ReviewQR intercepts unhappy customers privately first.</p>
-                  <Link href="/signup" className="text-xs font-black text-orange-600 hover:text-orange-700">Get the smart version →</Link>
+                  <Link href="/login" className="text-xs font-black text-orange-600 hover:text-orange-700">Get the smart version →</Link>
                 </div>
               </div>
             )}

@@ -1,4 +1,4 @@
-import { getSession } from "@/lib/auth";
+import { requireOwner } from "@/lib/auth";
 import { getDashboardData } from "@/lib/dashboard";
 import { NICHE_CATEGORIES } from "@/constants/niches";
 import DashboardShopActions from "@/components/DashboardShopActions";
@@ -10,8 +10,8 @@ import UserMenu from "@/components/UserMenu";
 import { TrialCountdownBadge, TrialCountdownBanner } from "@/components/TrialCountdown";
 
 export default async function DashboardPage() {
-  const session = await getSession();
-  if (!session) redirect("/login");
+  const owner = await requireOwner();
+  const session = { ownerId: owner.id, email: owner.email! };
 
   const data = await getDashboardData(session.ownerId);
   const shop = data.shop;

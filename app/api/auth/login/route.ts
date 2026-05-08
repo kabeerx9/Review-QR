@@ -24,8 +24,35 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "invalid_credentials" }, { status: 401 });
     }
 
-    const token = await createToken({ ownerId: owner.id, email: owner.email! });
-    const res = NextResponse.json({ success: true });
+    if (owner.disabledAt) {
+      return NextResponse.json({ error: "account_disabled" }, { status: 403 });
+    }
+
+    await prisma.owner.update({
+      where: { id: owner.id },
+      data: { lastLoginAt: new Date() },
+    });
+
+    const token = await createToken({
+      ownerId: owner.id,
+      email: owner.email!,
+      role: owner.role,
+      mustChangePassword: owner.mustChangePassword,
+    });
+
+    let redirectTo = "/dashboard";
+    if (owner.role === "SUPERADMIN") {
+      redirectTo = "/superadmin";
+    } else if (owner.mustChangePassword) {
+      redirectTo = "/change-password";
+    }
+
+    const res = NextResponse.json({
+      success: true,
+      role: owner.role,
+      mustChangePassword: owner.mustChangePassword,
+      redirectTo,
+    });
     setSessionCookie(res, token);
     return res;
   } catch (error) {

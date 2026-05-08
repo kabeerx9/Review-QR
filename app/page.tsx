@@ -260,14 +260,9 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Link href="/login" className="hidden sm:block text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">
+            <Link href="/login" className="rounded-full bg-slate-900 px-6 py-2.5 text-sm font-bold text-white transition-transform hover:scale-105 shadow-lg hover:bg-slate-800">
               Log in
             </Link>
-            <MagneticButton>
-              <Link href="/signup" className="rounded-full bg-slate-900 px-6 py-2.5 text-sm font-bold text-white transition-transform hover:scale-105 shadow-lg hover:bg-slate-800">
-                Start Free
-              </Link>
-            </MagneticButton>
           </div>
         </div>
       </nav>
@@ -294,8 +289,8 @@ export default function Home() {
 
           <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
             <MagneticButton>
-              <Link href="/signup" className="w-full sm:w-auto inline-flex items-center justify-center rounded-full bg-orange-500 px-8 py-4 text-lg font-black text-white transition-all hover:bg-orange-600 hover:scale-105 shadow-[0_8px_30px_rgba(249,115,22,0.3)]">
-                Get Your QR Code
+              <Link href="/login" className="w-full sm:w-auto inline-flex items-center justify-center rounded-full bg-orange-500 px-8 py-4 text-lg font-black text-white transition-all hover:bg-orange-600 hover:scale-105 shadow-[0_8px_30px_rgba(249,115,22,0.3)]">
+                Get Started
               </Link>
             </MagneticButton>
             <a href="#how" className="w-full sm:w-auto inline-flex items-center justify-center rounded-full border-2 border-slate-200 bg-white px-8 py-4 text-lg font-bold text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50">
@@ -524,8 +519,8 @@ export default function Home() {
                   ))}
                 </ul>
 
-                <Link href="/signup" className={`block w-full py-5 text-center rounded-2xl font-black text-lg transition-transform hover:scale-105 ${p.pop ? 'bg-white text-slate-900 shadow-xl' : 'bg-slate-100 text-slate-900 hover:bg-slate-200'}`}>
-                  Start Free Trial
+                <Link href="/login" className={`block w-full py-5 text-center rounded-2xl font-black text-lg transition-transform hover:scale-105 ${p.pop ? 'bg-white text-slate-900 shadow-xl' : 'bg-slate-100 text-slate-900 hover:bg-slate-200'}`}>
+                  Get Started
                 </Link>
               </motion.div>
             ))}
@@ -573,7 +568,7 @@ export default function Home() {
               Join the smartest offline businesses who are automatically turning their daily footfall into permanent digital reputation.
             </p>
             
-            <Link href="/signup" className="inline-flex items-center justify-center rounded-full bg-orange-500 px-10 py-6 text-xl font-black text-white transition-transform hover:scale-105 shadow-2xl hover:bg-orange-600">
+            <Link href="/login" className="inline-flex items-center justify-center rounded-full bg-orange-500 px-10 py-6 text-xl font-black text-white transition-transform hover:scale-105 shadow-2xl hover:bg-orange-600">
               Get Started in 2 Minutes
             </Link>
             <p className="mt-6 text-white/50 font-black uppercase tracking-widest text-[10px]">15-day free trial. No credit card required.</p>
@@ -654,8 +649,8 @@ export default function Home() {
             exit={{ opacity: 0, y: 100 }}
             className="fixed bottom-6 left-6 right-6 z-40 md:hidden pointer-events-auto"
           >
-            <Link href="/signup" className="flex w-full items-center justify-center rounded-full bg-slate-900 px-8 py-4 text-base font-black text-white shadow-2xl active:scale-95 transition-transform border border-slate-700">
-              Start Free Trial
+            <Link href="/login" className="flex w-full items-center justify-center rounded-full bg-slate-900 px-8 py-4 text-base font-black text-white shadow-2xl active:scale-95 transition-transform border border-slate-700">
+              Get Started
             </Link>
           </motion.div>
         )}

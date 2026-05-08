@@ -19,7 +19,7 @@ export default function BlogPost3() {
               <span className="text-xl font-black tracking-tight text-slate-900 hidden sm:block">ReviewQR</span>
             </Link>
           </div>
-          <Link href="/signup" className="text-sm font-bold text-orange-600 hover:text-orange-700">Start Free Trial →</Link>
+          <Link href="/login" className="text-sm font-bold text-orange-600 hover:text-orange-700">Start Free Trial →</Link>
         </div>
       </nav>
 
@@ -68,7 +68,7 @@ export default function BlogPost3() {
           <div className="relative z-10">
             <h3 className="text-2xl font-black mb-3">Implement all 5 strategies automatically.</h3>
             <p className="text-slate-400 font-medium mb-6">ReviewQR handles the QR code, the review generation, AND the auto-replies for you. Setup takes under 5 minutes.</p>
-            <Link href="/signup" className="inline-flex items-center gap-2 bg-orange-500 text-white px-8 py-3 rounded-full font-black hover:bg-orange-600 transition-colors">
+            <Link href="/login" className="inline-flex items-center gap-2 bg-orange-500 text-white px-8 py-3 rounded-full font-black hover:bg-orange-600 transition-colors">
               Start 15-Day Free Trial
             </Link>
           </div>

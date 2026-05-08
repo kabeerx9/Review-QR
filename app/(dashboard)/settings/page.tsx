@@ -1,22 +1,17 @@
-import { getSession } from "@/lib/auth";
+import { requireOwner } from "@/lib/auth";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import UserMenu from "@/components/UserMenu";
 import prisma from "@/lib/prisma";
 
 import SettingsForm from "@/components/SettingsForm";
 
 export default async function SettingsPage() {
-  const session = await getSession();
-  if (!session) redirect("/login");
-
-  const owner = await prisma.owner.findUnique({
-    where: { id: session.ownerId },
+  const owner = await requireOwner();
+  const ownerWithShops = await prisma.owner.findUnique({
+    where: { id: owner.id },
     include: { shops: true },
   });
-
-  if (!owner) redirect("/login");
-  const shop = owner.shops[0];
+  const shop = ownerWithShops?.shops[0];
 
   return (
     <main className="min-h-screen bg-[#FAFAFA] font-sans">

@@ -1,10 +1,10 @@
-import { getSessionFromRequest } from "@/lib/auth";
+import { requireActiveUserFromRequest } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
-    const session = await getSessionFromRequest(req);
-    if (!session) {
+    const owner = await requireActiveUserFromRequest(req);
+    if (!owner) {
       return NextResponse.json({ error: "unauthorized" }, { status: 401 });
     }
     return NextResponse.json(
