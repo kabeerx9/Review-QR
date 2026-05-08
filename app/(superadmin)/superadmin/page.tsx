@@ -358,48 +358,52 @@ export default function SuperAdminDashboard() {
       </div>
 
       {showCreateForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-full max-w-md rounded-lg border border-slate-200 bg-white p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 sm:p-6">
+          <div className="w-full max-w-lg rounded-lg border border-slate-200 bg-white p-6 shadow-xl">
             <h2 className="text-lg font-bold text-slate-900 mb-4">Create User</h2>
-            <form onSubmit={handleCreateUser} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Name</label>
-                <input
-                  name="name"
-                  type="text"
-                  required
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white text-slate-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none"
-                />
+            <form onSubmit={handleCreateUser} className="space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Name</label>
+                  <input
+                    name="name"
+                    type="text"
+                    required
+                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white text-slate-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
+                  <input
+                    name="email"
+                    type="email"
+                    required
+                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white text-slate-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none"
+                  />
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
-                <input
-                  name="email"
-                  type="email"
-                  required
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white text-slate-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">City</label>
-                <input
-                  name="city"
-                  type="text"
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white text-slate-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Business Type</label>
-                <select
-                  name="niche"
-                  value={createNiche}
-                  onChange={(e) => setCreateNiche(e.target.value)}
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white text-slate-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none"
-                >
-                  {Object.entries(NICHE_LABELS).map(([value, label]) => (
-                    <option key={value} value={value}>{label}</option>
-                  ))}
-                </select>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">City</label>
+                  <input
+                    name="city"
+                    type="text"
+                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white text-slate-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Business Type</label>
+                  <select
+                    name="niche"
+                    value={createNiche}
+                    onChange={(e) => setCreateNiche(e.target.value)}
+                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white text-slate-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none"
+                  >
+                    {Object.entries(NICHE_LABELS).map(([value, label]) => (
+                      <option key={value} value={value}>{label}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
               {createNiche === "OTHER" && (
                 <div>
@@ -420,28 +424,30 @@ export default function SuperAdminDashboard() {
                   className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white text-slate-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Google Review URL (Optional)</label>
-                <input
-                  name="googleReviewUrl"
-                  type="url"
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white text-slate-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Google Maps URL (Optional)</label>
-                <input
-                  name="googleMapsUrl"
-                  type="url"
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white text-slate-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Google Review URL (Optional)</label>
+                  <input
+                    name="googleReviewUrl"
+                    type="url"
+                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white text-slate-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Google Maps URL (Optional)</label>
+                  <input
+                    name="googleMapsUrl"
+                    type="url"
+                    className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white text-slate-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none"
+                  />
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">Internal Notes</label>
                 <textarea
                   name="internalNotes"
                   className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white text-slate-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none"
-                  rows={3}
+                  rows={2}
                 />
               </div>
               {createError && (
@@ -468,16 +474,16 @@ export default function SuperAdminDashboard() {
       )}
 
       {createdUsers.length > 0 && !showCreateForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-full max-w-2xl rounded-lg border border-slate-200 bg-white p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 sm:p-6">
+          <div className="w-full max-w-lg rounded-lg border border-slate-200 bg-white p-6 shadow-xl">
             <h2 className="text-lg font-bold text-slate-900 mb-4">User Created</h2>
             <p className="text-sm text-slate-600 mb-4">
               Copy this temporary password now. It won't be shown again.
             </p>
-            <div className="space-y-2 max-h-72 overflow-y-auto">
+            <div className="space-y-3">
               {createdUsers.map((user, i) => (
-                <div key={i} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
-                  <div className="mb-2">
+                <div key={i} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                  <div className="mb-3">
                     <p className="font-medium text-slate-900">{user.name}</p>
                     <p className="text-sm text-slate-600">{user.email}</p>
                   </div>
